@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Login</title>
+	<link rel="stylesheet" type="text/css" href="static-assets/css/fontawesome.min.css">
+	<link rel="stylesheet" type="text/css" href="static-assets/css/styles.css">
+</head>
+</head>
+<body>
+	<div class="loginSideBar">
+		<div class="login loginForm">
+			<div class="image">
+				<img src="https://scontent-sof1-1.xx.fbcdn.net/v/t1.0-9/49846457_2365962620301527_2003695710662295552_n.jpg?_nc_cat=100&_nc_ht=scontent-sof1-1.xx&oh=acf2129054356ffb9066986193b64a3e&oe=5CF56440">
+			</div>
+			<div class="loginName">Lazar Georgiev <i class="fal fa-long-arrow-right"></i></div>
+			<div class="loginUsername"><input type="text" name="loginUsername" id="loginUsername" placeholder="Username"></div>
+			<div class="loginPassword"><input type="password" name="loginPassword" id="loginPassword" placeholder="Password"></div>
+			<div class="loginButton">Log in</div>
+		</div>
+	</div>
+</body>
+</html>
+<script type="text/javascript">
+	//Login Clicked
+	document.getElementsByClassName('loginButton')[0].addEventListener("click", (event)=>{
+		let element = event.target;
+		//Process
+		if(!element.className.indexOf("processing") >=0){
+			element.classList.remove("error");
+			element.classList.add("processing");
+			element.innerHTML = '';
+			setTimeout(function() {
+				element.innerHTML = '<div class="loader"></div>';
+			}, 200);
+			//Start Ajax
+		}
+		//Failed
+		setTimeout(function() {
+			element.classList.remove("processing");
+			element.innerHTML = '&nbsp;';
+			setTimeout(function() {
+				element.innerHTML = 'Login';
+				element.classList.add("error");
+			}, 300);
+		}, 20000);
+		//Success
+		setTimeout(function() {
+			document.getElementsByClassName("loginUsername")[0].classList.add("hidden");
+			document.getElementsByClassName("loginPassword")[0].classList.add("hidden");
+			document.getElementsByClassName("loginButton")[0].classList.add("hidden");
+			setTimeout(function() {
+				element.classList.remove("processing");
+				element.innerHTML = 'Login';
+				document.getElementsByClassName("loginSideBar")[0].classList.add("sideBar");
+				//Logout
+				document.querySelector('.sideBar .image img').addEventListener("click", ()=>{
+					document.getElementsByClassName("loginSideBar")[0].classList.remove("sideBar");
+					setTimeout(function() {
+						document.getElementsByClassName("loginUsername")[0].classList.remove("hidden");
+						document.getElementsByClassName("loginPassword")[0].classList.remove("hidden");
+						document.getElementsByClassName("loginButton")[0].classList.remove("hidden");
+					}, 600);
+					
+				});
+			}, 800);
+		}, 2000);
+	});
+
+</script>
