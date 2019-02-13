@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { timeout } from 'q';
 
 @Component({
   selector: 'app-root',
@@ -13,33 +14,36 @@ export class AppComponent {
 			element.classList.remove("error");
 			element.classList.add("processing");
 			element.querySelector("span").style.display = "none";
-			setTimeout(function() {
+			setTimeout(() => {
         element.querySelector("div").style.display = "block";
 			}, 200);
 			//Start Ajax
       //Failed
-      setTimeout(function() {
+     setTimeout(() => {
         element.classList.remove("processing");
         element.querySelector("div").style.display = "none";
         
-        setTimeout(function() {
+       setTimeout(() => {
           element.querySelector("span").style.display = "block";
           element.classList.add("error");
         }, 300);
-      }, 2000);
+      }, 20000);
       //Success
-      setTimeout(function() {
+     setTimeout(() => {
         document.getElementsByClassName("loginUsername")[0].classList.add("hidden");
         document.getElementsByClassName("loginPassword")[0].classList.add("hidden");
         document.getElementsByClassName("loginButton")[0].classList.add("hidden");
-        setTimeout(function() {
+       setTimeout(() => {
           element.classList.remove("processing");
           element.classList.remove("error");
           document.getElementsByClassName("loginSideBar")[0].classList.add("sideBar");
+         
           //Logout
           document.querySelector('.sideBar .image img').addEventListener("click", ()=>{
+            element.querySelector("div").style.display = "none";
+            element.querySelector("span").style.display = "block";
             document.getElementsByClassName("loginSideBar")[0].classList.remove("sideBar");
-            setTimeout(function() {
+           setTimeout(() => {
               document.getElementsByClassName("loginUsername")[0].classList.remove("hidden");
               document.getElementsByClassName("loginPassword")[0].classList.remove("hidden");
               document.getElementsByClassName("loginButton")[0].classList.remove("hidden");
@@ -47,7 +51,7 @@ export class AppComponent {
             
           });
         }, 800);
-      }, 5000);
+      }, 500);
     }
   }
   title = 'angular';

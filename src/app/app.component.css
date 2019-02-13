@@ -1,18 +1,73 @@
+.main-view {
+  margin-left: 11vw;
+  top: 1vw;
+  position: relative;
+  width: 87vw;
+}
 .loginSideBar{
 	width: 100%;
-    height: 100%;
-    position: fixed;
-	background-color: #2C2F39;
+  height: 100%;
+  z-index: 1;
+  position: fixed;
+  background-color: #2C2F39;
+  -webkit-box-shadow:2px 0 10px rgba(0,0,0,.15);
+  -moz-box-shadow:2px 0 10px rgba(0,0,0,.15);
+  box-shadow:2px 0 10px rgba(0,0,0,.15);
 	-moz-transition: all 1000ms cubic-bezier(0.23, 1, 0.32, 1);
-    -webkit-transition: all 1000ms cubic-bezier(0.23, 1, 0.32, 1);
-  	transition:         all 1000ms cubic-bezier(0.23, 1, 0.32, 1);
+  -webkit-transition: all 1000ms cubic-bezier(0.23, 1, 0.32, 1);
+  transition:         all 1000ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 .sideBar{
-	width: 170px;
+	width: 9vw;
 }
 .login, .login input{
-	font-family: "FoundersGrotesk";
-  font-weight: lighter;
+	font-family: "Lato", "FoundersGrotesk";
+  font-weight: 300;
+}
+.loginSideBar .menu{
+  opacity: 0;
+  position: relative;
+  top: 50px;
+  color: #767987;
+  margin-top: 3vmax;
+  -moz-transition: all 1000ms cubic-bezier(0.23, 1, 0.32, 1);
+  -webkit-transition: all 1000ms cubic-bezier(0.23, 1, 0.32, 1);
+  transition:         all 1000ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.loginSideBar .menu ul{
+  list-style: none;
+  padding: 0;
+  margin: auto;
+  width: 80%;
+  font-size: 18px;
+  font-family: "Lato", "FoundersGrotesk";
+  font-weight: 300;
+}
+.loginSideBar .menu ul li{
+  padding: 10px 0;
+  text-align: center;
+  color: #767987;
+  text-decoration: none;
+}
+.loginSideBar .menu ul li a{
+  text-decoration: none;
+}
+.loginSideBar .menu ul i{
+  font-size: 28px;
+  text-decoration: none;
+  color: #767987;
+  padding: 5px;
+}
+.loginSideBar .menu li span{
+  display: block;
+  text-transform: uppercase;
+  font-size: 18px;
+  font-weight: 300;
+  color: #767987;
+  text-decoration: none;
+}
+.loginSideBar .menu ul li.active span, .loginSideBar .menu ul li.active i {
+  color: white
 }
 .loginForm {
 	width: 90%;
@@ -82,12 +137,12 @@
   	-moz-transition: all 400ms cubic-bezier(0.77, 0, 0.175, 1);
     -webkit-transition: all 400ms cubic-bezier(0.77, 0, 0.175, 1);
   	transition:         all 400ms cubic-bezier(0.77, 0, 0.175, 1);
-      line-height: 28px;
-      min-height: 28px;
+    
+      min-height: 46px;
 }
 .login .loginButton.processing{
-    width: 28px;
-    height: 28px;
+    width: 46px;
+    height: 36px;
     border-radius: 50%;
     font-size: 30px;
 }
@@ -135,7 +190,22 @@
   left: .1em;
   animation-direction: reverse;
 }
-
+.loginSideBar .loginForm{
+  z-index: 1;
+}
+.loginSideBar .menu{
+  z-index: 0;
+}
+.sideBar .loginForm{
+  z-index: 0;
+}
+.sideBar .menu{
+  z-index: 1;
+}
+.sideBar .menu{
+  opacity: 1;
+  top: 0;
+}
 .sideBar .image img{
   cursor: pointer;
 }

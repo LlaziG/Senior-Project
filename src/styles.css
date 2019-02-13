@@ -1,1 +1,85 @@
 /* You can add global styles to this file, and also import other style files */
+
+@import "~bootstrap/dist/css/bootstrap.css";
+@import "~datatables.net-bs4/css/dataTables.bootstrap4.css";
+@import url('https://fonts.googleapis.com/css?family=Lato:100,300,400');
+@font-face {
+	font-family: 'FoundersGrotesk';
+	src: url('/assets/fonts/FoundersGrotesk/FoundersGroteskWeb-Light.eot');
+	src: url('/assets/fonts/FoundersGrotesk/FoundersGroteskWeb-Light.eot?#iefix') format('embedded-opentype'), url('/assets/fonts/FoundersGrotesk/FoundersGroteskWeb-Light.woff') format('woff'), url('/assets/fonts/FoundersGrotesk/FoundersGroteskWeb-Light.ttf') format('truetype'), url('/assets/fonts/FoundersGrotesk/FoundersGroteskWeb-Light.svg') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+html, body {
+	height: 100%;
+	width: 100%;
+	padding: 0;
+	margin: 0;
+	background-color: #2F323D;
+	font-family: "Lato", "FoundersGrotesk";
+	overflow-x: hidden;
+}
+body::-webkit-scrollbar-track {
+	border: 0px solid black;
+	background-color: transparent;
+}
+body::-webkit-scrollbar {
+	width: 6px;
+	background-color: transparent;
+}
+body::-webkit-scrollbar-thumb {
+	background-color: #156BBF;
+	border-radius: 6px;
+}
+.row {
+	padding: 10px 0;
+}
+.card .card-header {
+	border-bottom: none;
+	background-color: transparent;
+}
+.bg-gradient-danger {
+	background-image: -webkit-linear-gradient(45deg, #ff394f, #ff8090);
+	background-image: -moz-linear-gradient(45deg, #ff394f, #ff8090);
+	background-image: -o-linear-gradient(45deg, #ff394f, #ff8090);
+	background-image: linear-gradient(45deg, #ff394f, #ff8090);
+	background-repeat: repeat-x;
+}
+.bg-gradient-success {
+	background-image: -webkit-linear-gradient(45deg, #1ec481, #69deb4);
+	background-image: -moz-linear-gradient(45deg, #1ec481, #69deb4);
+	background-image: -o-linear-gradient(45deg, #1ec481, #69deb4);
+	background-image: linear-gradient(45deg, #1ec481, #69deb4);
+	background-repeat: repeat-x;
+}
+.bg-gradient-amber {
+	background-image: -webkit-linear-gradient(45deg, #ffa000, #ffd54f);
+	background-image: -moz-linear-gradient(45deg, #ffa000, #ffd54f);
+	background-image: -o-linear-gradient(45deg, #ffa000, #ffd54f);
+	background-image: linear-gradient(45deg, #ffa000, #ffd54f);
+	background-repeat: repeat-x;
+}
+.bg-gradient-info {
+	background-image: -webkit-linear-gradient(45deg, #168dee, #62bcf6);
+	background-image: -moz-linear-gradient(45deg, #168dee, #62bcf6);
+	background-image: -o-linear-gradient(45deg, #168dee, #62bcf6);
+	background-image: linear-gradient(45deg, #168dee, #62bcf6);
+	background-repeat: repeat-x;
+}
+.bg-blue {
+	background-color: #156BBF;
+}
+.bg-none {
+	background-color: transparent;
+}
+.card {
+	border: none;
+	box-shadow: 1px 0 25px rgba(0, 0, 0, 0.2);
+}
+.page-item.active .page-link {
+  background-color: #156BBF;
+  border-color: #156BBF;
+}
+.page-link, .page-link:focus, .page-link:hover {
+  color: #156BBF;
+}
