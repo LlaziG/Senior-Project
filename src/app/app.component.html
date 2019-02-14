@@ -10,8 +10,8 @@
   </div>
   <div class="menu">
     <ul>
-      <li class="active">
-        <a href="javascript:">
+      <li>
+        <a routerLink = "dashboard" routerLinkActive="active">
             <i class="fal fa-chart-bar"></i>
           <span class="title">Dashboard</span>
         </a>
@@ -32,7 +32,7 @@
   </div>
 </div>
 <div class="main-view">
-    <app-dashboard></app-dashboard>
+  <router-outlet></router-outlet>
 </div>
 
 

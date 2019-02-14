@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { timeout } from 'q';
 
 @Component({
@@ -7,6 +8,7 @@ import { timeout } from 'q';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  constructor(private router: Router) {}
   login() {
     let element = document.querySelector(".loginButton");
 		//Process
@@ -30,6 +32,7 @@ export class AppComponent {
       }, 20000);
       //Success
      setTimeout(() => {
+        this.router.navigate(['/', 'dashboard']);
         document.getElementsByClassName("loginUsername")[0].classList.add("hidden");
         document.getElementsByClassName("loginPassword")[0].classList.add("hidden");
         document.getElementsByClassName("loginButton")[0].classList.add("hidden");
