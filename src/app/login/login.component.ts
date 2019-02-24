@@ -23,7 +23,11 @@ export class LoginComponent implements OnInit {
     this.password = document.getElementById("loginPassword");
     setTimeout(() => {
       this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
+      if (localStorage.getItem('currentUser')) {
+        this.loginSuccessful(document.querySelector(".loginButton"), "");
+      }
     }, 1);
+    
 
   }
   constructor(private route: ActivatedRoute,
@@ -54,81 +58,45 @@ export class LoginComponent implements OnInit {
         .pipe(first())
         .subscribe(
           data => {
-            this.router.navigate([this.returnUrl]);
-            document.getElementsByClassName("loginUsername")[0].classList.add("hidden");
-            document.getElementsByClassName("loginPassword")[0].classList.add("hidden");
-            document.getElementsByClassName("loginButton")[0].classList.add("hidden");
-            setTimeout(() => {
-              element.classList.remove("processing");
-              element.classList.remove("error");
-              document.getElementsByClassName("loginSideBar")[0].classList.add("sideBar");
-              this.email.value = "";
-              this.password.value = "";
-              //Logout
-              document.querySelector('.sideBar .image img').addEventListener("click", () => {
-                element.querySelector("div").style.display = "none";
-                element.querySelector("span").style.display = "block";
-                document.getElementsByClassName("loginSideBar")[0].classList.remove("sideBar");
-                setTimeout(() => {
-                  this.logout();
-                  document.getElementsByClassName("loginUsername")[0].classList.remove("hidden");
-                  document.getElementsByClassName("loginPassword")[0].classList.remove("hidden");
-                  document.getElementsByClassName("loginButton")[0].classList.remove("hidden");
-                }, 600);
-              });
-            }, 800);
+            this.loginSuccessful(element, data);
           },
           error => {
-            element.classList.remove("processing");
-            element.querySelector("div").style.display = "none";
-
-            setTimeout(() => {
-              element.querySelector("span").style.display = "block";
-              element.classList.add("error");
-            }, 300);
+            this.loginFailed(element, error);
           });
-
-      /*  await this._loginService.auth({
-         email: this.email.value,
-         password: this.password.value
-       })
-         .subscribe(res => {
-           this.router.navigate(['/', 'dashboard']);
-           document.getElementsByClassName("loginUsername")[0].classList.add("hidden");
-           document.getElementsByClassName("loginPassword")[0].classList.add("hidden");
-           document.getElementsByClassName("loginButton")[0].classList.add("hidden");
-           setTimeout(() => {
-             element.classList.remove("processing");
-             element.classList.remove("error");
-             document.getElementsByClassName("loginSideBar")[0].classList.add("sideBar");
-             this.email.value = "";
-             this.password.value = "";
-             //Logout
-             document.querySelector('.sideBar .image img').addEventListener("click", () => {
-               element.querySelector("div").style.display = "none";
-               element.querySelector("span").style.display = "block";
-               document.getElementsByClassName("loginSideBar")[0].classList.remove("sideBar");
-               setTimeout(() => {
-                 this.router.navigate(['/', '/']);
-                 document.getElementsByClassName("loginUsername")[0].classList.remove("hidden");
-                 document.getElementsByClassName("loginPassword")[0].classList.remove("hidden");
-                 document.getElementsByClassName("loginButton")[0].classList.remove("hidden");
-               }, 600);
-             });
-           }, 800);
-         },
-           error => {
-             if (error.status == 400) {
-               element.classList.remove("processing");
-               element.querySelector("div").style.display = "none";
- 
-               setTimeout(() => {
-                 element.querySelector("span").style.display = "block";
-                 element.classList.add("error");
-               }, 300);
-             }
-             else console.log("Error", error);
-           }); */
     }
+  }
+  loginSuccessful(element: any, data: any) {
+    this.router.navigate([this.returnUrl]);
+    document.getElementsByClassName("loginUsername")[0].classList.add("hidden");
+    document.getElementsByClassName("loginPassword")[0].classList.add("hidden");
+    document.getElementsByClassName("loginButton")[0].classList.add("hidden");
+    setTimeout(() => {
+      element.classList.remove("processing");
+      element.classList.remove("error");
+      document.getElementsByClassName("loginSideBar")[0].classList.add("sideBar");
+      this.email.value = "";
+      this.password.value = "";
+      //Logout
+      document.querySelector('.sideBar .image img').addEventListener("click", () => {
+        element.querySelector("div").style.display = "none";
+        element.querySelector("span").style.display = "block";
+        document.getElementsByClassName("loginSideBar")[0].classList.remove("sideBar");
+        setTimeout(() => {
+          this.logout();
+          document.getElementsByClassName("loginUsername")[0].classList.remove("hidden");
+          document.getElementsByClassName("loginPassword")[0].classList.remove("hidden");
+          document.getElementsByClassName("loginButton")[0].classList.remove("hidden");
+        }, 600);
+      });
+    }, 800);
+  }
+  loginFailed(element: any, error: any) {
+    element.classList.remove("processing");
+    element.querySelector("div").style.display = "none";
+
+    setTimeout(() => {
+      element.querySelector("span").style.display = "block";
+      element.classList.add("error");
+    }, 300);
   }
 }
