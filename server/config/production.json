@@ -1,5 +1,4 @@
 {
 	"name" : "Stock Trading Bot - Production",
-	"port" : "5001",
-	"mail" : {},
+	"port" : "5001"
 }

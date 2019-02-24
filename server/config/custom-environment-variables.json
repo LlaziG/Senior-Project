@@ -1,3 +1,4 @@
 {
-	"password" : "app_DB_pass"
+	"password" : "trader_DBpass",
+	"jwtPrivateKey" : "trader_jwtPrivateKey"
 }

@@ -13,7 +13,8 @@ const Transaction = mongoose.model('Transaction', new mongoose.Schema({
     },
     dateTime : {
         type : Date,
-        required : true
+        required : true,
+        default : Date.now
     },
     stockPrice : {
         type : Number,
@@ -34,7 +35,7 @@ const Transaction = mongoose.model('Transaction', new mongoose.Schema({
 
 function validateTransaction(transaction){
     const schema = {
-        account : Joi.string().required(),
+        account : Joi.objectId().required(),
         ticked : Joi.string().required(),
         dateTime : Joi.date().required,
         stockPrice : Joi.number().min(0).required(),

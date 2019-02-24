@@ -14,16 +14,16 @@ import 'datatables.net-bs4';
 })
 export class TransactionsComponent implements OnInit {
   // Our array of clients
-  clients: any[];
+  transactions: any[];
   // Our future instance of DataTable
   dataTable: any;
 
   constructor(private http: HttpClient, private chRef: ChangeDetectorRef){}
 
   ngOnInit(){
-    this.http.get('https://5a5a9e00bc6e340012a03796.mockapi.io/clients')
+    this.http.get('https://5c65aecb19df280014b6274c.mockapi.io/transactions')
       .subscribe((data: any[]) => {
-        this.clients = data;
+        this.transactions = data;
   
         // You'll have to wait that changeDetection occurs and projects data into 
         // the HTML template, you can ask Angular to that for you ;-)

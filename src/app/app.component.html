@@ -1,38 +1,6 @@
-<div class="loginSideBar">
-  <div class="login loginForm">
-    <div class="image">
-      <img src="https://scontent-sof1-1.xx.fbcdn.net/v/t1.0-9/49846457_2365962620301527_2003695710662295552_n.jpg?_nc_cat=100&_nc_ht=scontent-sof1-1.xx&oh=acf2129054356ffb9066986193b64a3e&oe=5CF56440">
-    </div>
-    <div class="loginName">Lazar Georgiev &nbsp;<i class="fal fa-sign-out"></i></div>
-    <div class="loginUsername"><input type="text" name="loginUsername" id="loginUsername" placeholder="Username"></div>
-    <div class="loginPassword"><input type="password" name="loginPassword" id="loginPassword" placeholder="Password"></div>
-    <div class="loginButton" (click) = "login()"><span>Log in</span><div class="loader"></div></div>
-  </div>
-  <div class="menu">
-    <ul>
-      <li>
-        <a routerLink = "dashboard" routerLinkActive="active">
-            <i class="fal fa-chart-bar"></i>
-          <span class="title">Dashboard</span>
-        </a>
-      </li>
-      <li>
-        <a href="javascript:">
-            <i class="fal fa-search"></i>
-          <span class="title">Search</span>
-        </a>
-      </li>
-        <li>
-          <a href="javascript:">
-              <i class="fal fa-wallet"></i>
-            <span class="title">Portfolio</span>
-          </a>
-        </li>
-    </ul>
-  </div>
-</div>
-<div class="main-view">
-  <router-outlet></router-outlet>
+<app-login></app-login>
+<div class="main-view" [@routerTransition]="getState(o)">
+    <router-outlet #o="outlet"></router-outlet>
 </div>
 
 
