@@ -37,9 +37,9 @@ function validateTransaction(transaction){
     const schema = {
         account : Joi.objectId().required(),
         ticked : Joi.string().required(),
-        dateTime : Joi.date().required,
+        dateTime : Joi.date().required(),
         stockPrice : Joi.number().min(0).required(),
-        type : Joi.string.required(),
+        type : Joi.string().required(),
         volume : Joi.number().min(0).required()  
     }
     return Joi.validate(transaction, schema);

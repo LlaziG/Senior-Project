@@ -1,13 +1,13 @@
-const mongoose = require('mongoose');
 const _ = require("lodash");
 const bcrypt = require("bcrypt");
-const { Account, validate, validateAuth } = require('../models/accounts');
+
 const express = require('express');
 const router = express.Router();
-const auth = require('../middleware/auth');
 
+const { Account, validate, validateAuth } = require('../models/accounts');
+const {auth, asyncEH} = require('../middleware/index');
 
-router.post('/', async (req, res) => {
+router.post('/', asyncEH(async (req, res) => {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
@@ -20,9 +20,9 @@ router.post('/', async (req, res) => {
 
     account = await account.save();
     res.send(_.pick(account, ['id', 'name', 'email']));
-});
+}));
 
-router.post('/authenticate', async (req, res) => {
+router.post('/authenticate', asyncEH(async (req, res) => {
     const { error } = validateAuth(req.body);
     if (error) return res.status(400).send(error.details[0].message);
     
@@ -41,10 +41,10 @@ router.post('/authenticate', async (req, res) => {
                 token : token
             }
         }).end();
-});
+}));
 
-router.get("/me", auth, async(req, res) => {
+router.get("/me", auth, asyncEH(async(req, res) => {
     const account = await Account.findById(req.user._id).select('-password');
     res.send(account);
-});
+}));
 module.exports = router;
