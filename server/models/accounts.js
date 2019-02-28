@@ -19,21 +19,18 @@ const accountSchema = new mongoose.Schema({
         required : true,
         maxlength : 2048
     },
-    initialCash : {
-        type : Number,
-        default : 0
-    },
-    availableCash : {
-        type : Number,
-        default : 0
+    wallet : {
+        type : mongoose.Schema.Types.ObjectId,
+        required : true,
+        ref : 'Wallet'
     }
 });
 
 accountSchema.methods.generateAuthToken = function() {
     const token = jwt.sign({_id : this._id}, config.get('jwtPrivateKey'));
     return token;
-    //rhYcv$yczU7nvH+9HZRZ
 }
+accountSchema.statics.fillable = ['name','email','password','wallet'];
 
 const Account = mongoose.model('Account', accountSchema);
 
@@ -42,8 +39,7 @@ function validateAccount(account){
         name : Joi.string().max(75).required(),
         email : Joi.string().max(255).required().email(),
         password : Joi.string().max(2048).required(),
-        initialCash : Joi.number(),
-        availableCash : Joi.number()  
+        wallet : Joi.objectId().required()
     }
     return Joi.validate(account, schema);
 }

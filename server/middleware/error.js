@@ -1,6 +1,6 @@
-const {defaultLogger} = require('../startup/loggers');
+const { defaultLogger } = require('../helpers/index');
 
-function error(err, req, res, next){
+function error(err, req, res, next) {
     defaultLogger.error(err.message, err);
 
     res.status(500).send('Something Failed.');

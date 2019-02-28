@@ -1,4 +1,4 @@
-const { defaultLogger } = require('./loggers');
+const { defaultLogger } = require('../helpers/index');
 
 module.exports = function () {
     process.on('uncaughtException', (ex) => {
