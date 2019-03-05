@@ -3,7 +3,6 @@ const bcrypt = require("bcrypt");
 
 const express = require('express');
 const router = express.Router();
-const request = require('request');
 
 const { Account, validate, validateAuth } = require('../models/accounts');
 const { auth, asyncEH } = require('../middleware/index');
@@ -39,7 +38,7 @@ router.post('/authenticate', asyncEH(async (req, res) => {
     if (!validPassword) return res.status(400).send("Wrong Credentials");
 
     const token = account.generateAuthToken();
-    res.header(token).status(200).send(
+    res.header({'x-auth-token' : token}).status(200).send(
         {
             account: {
                 email: account.email,

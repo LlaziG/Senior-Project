@@ -15,14 +15,14 @@ const appRoutes: Routes = [
     {
         path: 'dashboard',
         component: DashboardComponent,
-        canActivate: [AuthGuard], 
-        data: { state: 'dashboard' } 
+        canActivate: [AuthGuard],
+        data: { state: 'dashboard' }
     },
     {
         path: 'search',
         component: SearchComponent,
-        canActivate: [AuthGuard], 
-        data: { state: 'search' } 
+        canActivate: [AuthGuard],
+        data: { state: 'search' }
     },
 
     { path: '**', redirectTo: '' }

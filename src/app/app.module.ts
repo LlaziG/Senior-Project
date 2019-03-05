@@ -2,6 +2,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatNativeDateModule } from '@angular/material';
+import { ToastrModule } from 'ngx-toastr';
+
+
 
 import { AppConfigModule } from './app-config.module';
 import { routing } from './app.routing';
@@ -17,6 +22,8 @@ import { DashboardChartsComponent } from './dashboard/dashboard-charts/dashboard
 import { SearchComponent } from './search/search.component';
 
 import { JwtInterceptor, ErrorInterceptor } from './_helpers';
+import { AuthenticationService, UserService, SuggestionService } from './_services';
+import { MaterialModule } from './material-module';
 
 
 @NgModule({
@@ -26,18 +33,24 @@ import { JwtInterceptor, ErrorInterceptor } from './_helpers';
     TransactionsComponent,
     SearchComponent,
     DashboardChartsComponent,
-    LoginComponent
+    LoginComponent,
   ],
   imports: [
     AppConfigModule,
     BrowserModule,
     BrowserAnimationsModule,
+    ToastrModule.forRoot(),
     HttpClientModule,
-    routing
+    routing,
+    FormsModule,
+    ReactiveFormsModule,
+    MatNativeDateModule,
+    MaterialModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    SuggestionService
   ],
   bootstrap: [AppComponent]
 })

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
-const Transaction = mongoose.model('Transaction', new mongoose.Schema({
+const TransactionSchema = new mongoose.Schema({
     account : {
         type : mongoose.Schema.Types.ObjectId,
         required : true,
@@ -31,7 +31,10 @@ const Transaction = mongoose.model('Transaction', new mongoose.Schema({
         required : true,
         min : 0
     }
-}));
+});
+
+TransactionSchema.statics.fillable = ['account','ticker','dateTime','stockPrice', 'type', 'volume'];
+const Transaction = mongoose.model('Transaction', TransactionSchema);
 
 function validateTransaction(transaction){
     const schema = {

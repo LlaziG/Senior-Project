@@ -1,0 +1,56 @@
+.company-form {
+    width: 100%;
+  }
+  .company-form input, .company-form label, .subscription-form .mat-select-value-text, .subscription-form .mat-select-arrow, .subscription-form label, .subscription-form input {
+color: white!important;
+  }
+  .mat-form-field-underline, .mat-form-field.mat-focused .mat-form-field-ripple{
+      background-color:white!important;
+  }
+  .mat-progress-spinner circle, .mat-spinner circle{
+      stroke : black;
+  }
+  .mat-option:focus:not(.mat-option-disabled), .mat-option:hover:not(.mat-option-disabled){
+      background-color: #666;
+  }
+  .mat-option{
+      background-color: #333;
+      color: #ccc;
+  }
+  .company-full-width {
+    width: 100%;
+  }
+  .mat-autocomplete-panel.ng-star-inserted.mat-autocomplete-visible::-webkit-scrollbar-track {
+	border: 0px solid black;
+	background-color: transparent;
+}
+.mat-autocomplete-panel.ng-star-inserted.mat-autocomplete-visible::-webkit-scrollbar {
+	width: 6px;
+	background-color: transparent;
+}
+.mat-autocomplete-panel.ng-star-inserted.mat-autocomplete-visible::-webkit-scrollbar-thumb {
+	background-color: #156BBF;
+	border-radius: 6px;
+}
+
+.toast-container > div {
+    position: relative;
+    pointer-events: auto;
+    overflow: hidden;
+    margin: 0 0 6px;
+    padding: 15px 15px 15px 50px;
+    width: 300px;
+    -moz-border-radius: 3px 3px 3px 3px;
+    -webkit-border-radius: 3px 3px 3px 3px;
+    border-radius: 3px 3px 3px 3px;
+    background-position: 15px center;
+    background-repeat: no-repeat;
+    box-shadow: none!important;
+    color: #FFFFFF;
+    opacity: 0.85;
+    -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=85);
+    filter: alpha(opacity=85);
+}
+.toast-info {
+    background-color: #156BBF;
+}

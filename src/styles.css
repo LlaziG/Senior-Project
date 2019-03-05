@@ -1,8 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
-
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
 @import "~bootstrap/dist/css/bootstrap.css";
 @import "~datatables.net-bs4/css/dataTables.bootstrap4.css";
 @import url('https://fonts.googleapis.com/css?family=Lato:100,300,400');
+@import url('https://fonts.googleapis.com/css?family=Montserrat:100,300,400');
+@import '~ngx-toastr/toastr.css';
+
 @font-face {
 	font-family: 'FoundersGrotesk';
 	src: url('/assets/fonts/FoundersGrotesk/FoundersGroteskWeb-Light.eot');

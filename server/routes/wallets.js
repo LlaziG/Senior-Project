@@ -19,10 +19,8 @@ router.put('/:id', asyncEH(async (req, res) => {
     if (!wallet) return res.status(400).send("Bad Request");
 
     _.extend(wallet, req.body);
-    console.log(_.pick(wallet, Wallet.fillable));
     const { error } = validate(_.pick(wallet, Wallet.fillable));
     if (error) {
-        console.log(error)
         return res.status(400).send(error.details[0].message);
     }
 

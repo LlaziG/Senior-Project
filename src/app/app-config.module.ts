@@ -1,5 +1,4 @@
 import { NgModule, InjectionToken } from '@angular/core';
-import { environment } from '../environments/environment';
 
 export let APP_CONFIG = new InjectionToken<AppConfig>('app.config');
 
@@ -8,7 +7,7 @@ export class AppConfig {
 }
 
 export const APP_DI_CONFIG: AppConfig = {
-  apiEndpoint: "//localhost:5000/api"
+  apiEndpoint: "//localhost:3000/api"
 };
 
 @NgModule({

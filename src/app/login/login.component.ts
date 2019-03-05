@@ -27,7 +27,7 @@ export class LoginComponent implements OnInit {
         this.loginSuccessful(document.querySelector(".loginButton"), "");
       }
     }, 1);
-    
+
 
   }
   constructor(private route: ActivatedRoute,
@@ -70,6 +70,12 @@ export class LoginComponent implements OnInit {
     document.getElementsByClassName("loginUsername")[0].classList.add("hidden");
     document.getElementsByClassName("loginPassword")[0].classList.add("hidden");
     document.getElementsByClassName("loginButton")[0].classList.add("hidden");
+    document.getElementsByClassName("loginUsername")[0].setAttribute('disabled', 'true');
+    document.getElementsByClassName("loginPassword")[0].setAttribute('disabled', 'true');
+    document.getElementsByClassName("loginButton")[0].setAttribute('disabled', 'true');
+
+
+
     setTimeout(() => {
       element.classList.remove("processing");
       element.classList.remove("error");
@@ -86,6 +92,9 @@ export class LoginComponent implements OnInit {
           document.getElementsByClassName("loginUsername")[0].classList.remove("hidden");
           document.getElementsByClassName("loginPassword")[0].classList.remove("hidden");
           document.getElementsByClassName("loginButton")[0].classList.remove("hidden");
+          document.getElementsByClassName("loginUsername")[0].setAttribute('disabled', 'false');
+          document.getElementsByClassName("loginPassword")[0].setAttribute('disabled', 'false');
+          document.getElementsByClassName("loginButton")[0].setAttribute('disabled', 'false');
         }, 600);
       });
     }, 800);

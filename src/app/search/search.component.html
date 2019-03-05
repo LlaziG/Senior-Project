@@ -1,5 +1,41 @@
+<form class="company-form" [formGroup]="companiesForm">
+  <mat-form-field class="company-full-width">
+    <input matInput placeholder="Search for a stock" [matAutocomplete]="auto" formControlName='suggestionInput'>
+  </mat-form-field>
+
+  <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+    <mat-option *ngIf="isLoading" class="is-loading">
+      <mat-spinner diameter="20"></mat-spinner>
+    </mat-option>
+    <ng-container *ngIf="!isLoading">
+      <mat-option *ngFor="let suggestion of filteredSuggestions" [value]="suggestion">
+        <span><strong>{{ suggestion.symbol }}</strong> - </span>
+        <span> {{suggestion.name}}</span>
+      </mat-option>
+    </ng-container>
+  </mat-autocomplete>
+</form>
+<form class="subscription-form" [formGroup]="suggestions" (ngSubmit)="submitSubscription()">
+  <mat-form-field>
+    <input matInput placeholder="Company (disabled)" disabled value={{this.currentTicker}}>
+  </mat-form-field>
+  &nbsp;<mat-form-field>
+    <mat-select placeholder="Subscribe Form" formControlName="interval">
+      <mat-option value="0">Unsubscribe</mat-option>
+      <mat-option value="1m">1 min</mat-option>
+      <mat-option value="2m">2 min</mat-option>
+      <mat-option value="5m">5 min</mat-option>
+      <mat-option value="15m">15 min</mat-option>
+      <mat-option value="30m">30 min</mat-option>
+      <mat-option value="1h">1 hour</mat-option>
+    </mat-select>
+  </mat-form-field>
+  &nbsp;<button mat-flat-button>Change Subscription</button>
+</form>
 <div class="row">
   <div class="col-12">
     <div id="stockChart" style="width: 100%;"></div>
   </div>
+</div>
+<div>
 </div>

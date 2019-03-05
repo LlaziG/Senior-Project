@@ -1,4 +1,4 @@
 {
-	"password" : "trader_DBpass",
-	"jwtPrivateKey" : "trader_jwtPrivateKey"
+	"password": "trader_DBpass",
+	"jwtPrivateKey": "trader_jwtPrivateKey"
 }

@@ -1,26 +1,41 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Subscription } from 'rxjs';
+import { Component, OnInit, ChangeDetectorRef, HostListener, ViewEncapsulation } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import * as echarts from 'echarts';
-import { timeout } from 'q';
-
-
-
+import { Suggestion } from '../_models/suggestion';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { SuggestionService } from '../_services/suggestion.service';
+import { switchMap, debounceTime, tap, finalize } from 'rxjs/operators';
+import { APP_DI_CONFIG } from '../app-config.module';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
     selector: 'app-search',
     templateUrl: './search.component.html',
-    styleUrls: ['./search.component.css']
+    styleUrls: ['./search.component.css'],
+    encapsulation: ViewEncapsulation.None
 })
 export class SearchComponent implements OnInit {
 
-    constructor(private http: HttpClient, private chRef: ChangeDetectorRef) { }
-    rawData: any[];
+    constructor(
+        private http: HttpClient,
+        private chRef: ChangeDetectorRef,
+        private fb: FormBuilder,
+        private suggestionService: SuggestionService,
+        private toastr: ToastrService
+    ) { }
+
+    rawData: any;
     stockChart: any;
     stockChartOptions: any;
-    candles: any;
-    dates: any;
-    volumes: any;
+    candles: any[];
+    dates: any[];
+    volumes: any[];
+    filteredSuggestions: Suggestion[] = [];
+    companiesForm: FormGroup;
+    suggestions: FormGroup;
+    isLoading = false;
+    displayFn: any;
+    currentTicker = "AAPL";
 
     calculateMA(dayCount, data) {
         var result = [];
@@ -33,150 +48,244 @@ export class SearchComponent implements OnInit {
             for (var j = 0; j < dayCount; j++) {
                 sum += data[i - j][1];
             }
-            result.push(sum / dayCount);
+            result.push((sum / dayCount).toFixed(4));
         }
         return result;
     }
-
     ngOnInit() {
-        document.getElementById('stockChart').style.height = (window.innerHeight - window.innerWidth * 2 / 100 - 20) + "px";
-        this.http.get('https://api.iextrading.com/1.0/stock/aapl/chart/5y')
-            .subscribe((data: any) => {
-                this.rawData = data;
-                this.stockChart = echarts.init(document.getElementById('stockChart'));
+        let that = this;
+        function getCandleData(company, interval, range, callback) {
+            that.http.get(APP_DI_CONFIG.apiEndpoint + '/quotes/candles/' + company + '/' + interval + '/' + range)
+                .subscribe((data: any) => {
+                    that.rawData = data.chart.result[0].indicators.quote[0];
+                    that.stockChart = echarts.init(document.getElementById('stockChart'));
 
-                this.dates = this.rawData.map(function (item) {
-                    return item.date;
+                    that.dates = data.chart.result[0].timestamp.map(function (item) {
+                        var iso = new Date(item * 1000).toISOString().match(/(\d{4}\-\d{2}\-\d{2})T(\d{2}:\d{2}:\d{2})/)
+                        return iso[1] + ' ' + iso[2];
+                    });
+                    that.volumes = [];
+                    that.candles = [];
+                    for (let i = 0; i < that.rawData.open.length; i++) {
+                        that.volumes.push([
+                            i,
+                            that.rawData.volume[i],
+                            that.rawData.open[i] > that.rawData.close[i] ? -1 : 1
+                        ]);
+                        that.candles.push([
+                            +that.rawData.open[i],
+                            +that.rawData.close[i],
+                            +that.rawData.low[i],
+                            +that.rawData.high[i]
+                        ]);
+                    }
+                    callback();
                 });
-                let i = -1;
-                this.volumes = this.rawData.map(function (item){
-                    i++;
-                	return [i, item.volume, item.open > item.close ? -1 : 1];
-                });
-                console.log(this.volumes);
-                this.candles = this.rawData.map(function (item) {
-                    return [+item.open, +item.close, +item.low, +item.high];
-                });
-                this.stockChartOptions = {
-                    backgroundColor: '#21202D',
-                    animation: false,
-                    legend: {
-                        data: ['AAPL', 'MA5', 'MA10', 'MA20', 'MA30'],
-                        inactiveColor: '#777',
-                        textStyle: {
-                            color: '#fff'
-                        }
-                    },
-                    toolbox: {
-                        feature: {
-                            my1m: {
-                                show: true,
-                                title: '1m',
-                                icon: 'path://M432.45,595.444c0,2.177-4.661,6.82-11.305,6.82c-6.475,0-11.306-4.567-11.306-6.82s4.852-6.812,11.306-6.812C427.841,588.632,432.452,593.191,432.45,595.444L432.45,595.444z M421.155,589.876c-3.009,0-5.448,2.495-5.448,5.572s2.439,5.572,5.448,5.572c3.01,0,5.449-2.495,5.449-5.572C426.604,592.371,424.165,589.876,421.155,589.876L421.155,589.876z M421.146,591.891c-1.916,0-3.47,1.589-3.47,3.549c0,1.959,1.554,3.548,3.47,3.548s3.469-1.589,3.469-3.548C424.614,593.479,423.062,591.891,421.146,591.891L421.146,591.891zM421.146,591.891',
-                                onclick: function (){
-                                    alert('myToolHandler1')
-                                }
-                            },
-                            my5m: {
-                                show: true,
-                                title: '5m',
-                                icon: 'image://http://echarts.baidu.com/images/favicon.png',
-                                onclick: function (){
-                                    alert('myToolHandler2')
-                                }
+
+        }
+        function setOptions(company, callback) {
+            that.stockChartOptions = {
+                backgroundColor: '#21202D',
+                animation: false,
+                legend: {
+                    data: [company, 'MA5', 'MA10', 'MA20', 'MA30'],
+                    inactiveColor: '#777',
+                    textStyle: {
+                        color: '#fff',
+                        fontFamily: 'Lato',
+                        fontSize: '16'
+                    }
+                },
+                toolbox: {
+                    feature: {
+                        my1m: {
+                            show: true,
+                            icon: 'image:///assets/icons/1m.png',
+                            title: ' ',
+                            onclick: function () {
+                                getCandleData(that.currentTicker, "1m", "7d", () => {
+                                    setOptions(that.currentTicker, () => {
+                                        that.stockChart.setOption(that.stockChartOptions);
+                                    });
+                                });
+                            }
+                        },
+                        my2m: {
+                            show: true,
+                            icon: 'image:///assets/icons/2m.png',
+                            title: ' ',
+                            onclick: function () {
+                                getCandleData(that.currentTicker, "2m", "14d", () => {
+                                    setOptions(that.currentTicker, () => {
+                                        that.stockChart.setOption(that.stockChartOptions);
+                                    });
+                                });
+                            }
+                        },
+                        my5m: {
+                            show: true,
+                            icon: 'image:///assets/icons/5m.png',
+                            title: ' ',
+                            onclick: function () {
+                                getCandleData(that.currentTicker, "5m", "20d", () => {
+                                    setOptions(that.currentTicker, () => {
+                                        that.stockChart.setOption(that.stockChartOptions);
+                                    });
+                                });
+                            }
+                        },
+                        my15m: {
+                            show: true,
+                            icon: 'image:///assets/icons/15m.png',
+                            title: ' ',
+                            onclick: function () {
+                                getCandleData(that.currentTicker, "15m", "30d", () => {
+                                    setOptions(that.currentTicker, () => {
+                                        that.stockChart.setOption(that.stockChartOptions);
+                                    });
+                                });
+                            }
+                        },
+                        my30m: {
+                            show: true,
+                            icon: 'image:///assets/icons/30m.png',
+                            title: ' ',
+                            onclick: function () {
+                                getCandleData(that.currentTicker, "30m", "45d", () => {
+                                    setOptions(that.currentTicker, () => {
+                                        that.stockChart.setOption(that.stockChartOptions);
+                                    });
+                                });
+                            }
+                        },
+                        my1h: {
+                            show: true,
+                            icon: 'image:///assets/icons/1h.png',
+                            title: ' ',
+                            onclick: function () {
+                                getCandleData(that.currentTicker, "1h", "70d", () => {
+                                    setOptions(that.currentTicker, () => {
+                                        that.stockChart.setOption(that.stockChartOptions);
+                                    });
+                                });
+                            }
+                        },
+                        myytd: {
+                            show: true,
+                            icon: 'image:///assets/icons/ytd.png',
+                            title: ' ',
+                            onclick: function () {
+                                getCandleData(that.currentTicker, "1h", "ytd", () => {
+                                    setOptions(that.currentTicker, () => {
+                                        that.stockChart.setOption(that.stockChartOptions);
+                                    });
+                                });
+                            }
+                        },
+                        myall: {
+                            show: true,
+                            icon: 'image:///assets/icons/max.png',
+                            title: ' ',
+                            onclick: function () {
+                                getCandleData(that.currentTicker, "1h", "max", () => {
+                                    setOptions(that.currentTicker, () => {
+                                        that.stockChart.setOption(that.stockChartOptions);
+                                    });
+                                });
                             }
                         }
                     },
-                    tooltip: {
-                        trigger: 'axis',
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        animation: false,
+                        type: 'cross',
+                        lineStyle: {
+                            color: '#376df4',
+                            width: 2,
+                            opacity: 1
+                        }
+                    }
+                },
+                visualMap: {
+                    show: false,
+                    seriesIndex: 5,
+                    dimension: 2,
+                    pieces: [{
+                        value: -1,
+                        color: '#b33939'
+                    }, {
+                        value: 1,
+                        color: '#218c74'
+                    }]
+                },
+                grid: [
+                    {
+                        left: '10%',
+                        right: '8%',
+                        height: '50%'
+                    },
+                    {
+                        left: '10%',
+                        right: '8%',
+                        top: '63%',
+                        height: '16%'
+                    }
+                ],
+                xAxis: [
+                    {
+
+                        type: 'category',
+                        data: that.dates,
+                        scale: true,
+                        boundaryGap: false,
+                        axisLine: { lineStyle: { color: '#8392A5' } },
+                        splitLine: { show: false },
+                        splitNumber: 20,
+                        min: 'dataMin',
+                        max: 'dataMax',
                         axisPointer: {
-                            animation: false,
-                            type: 'cross',
-                            lineStyle: {
-                                color: '#376df4',
-                                width: 2,
-                                opacity: 1
-                            }
+                            z: 100
                         }
                     },
-                    visualMap: {
-                        show: false,
-                        seriesIndex: 5,
-                        dimension: 2,
-                        pieces: [{
-                            value: -1,
-                            color: '#b33939'
-                        }, {
-                            value: 1,
-                            color: '#218c74'
-                        }]
+                    {
+                        type: 'category',
+                        gridIndex: 1,
+                        data: that.dates,
+                        scale: true,
+                        boundaryGap: false,
+                        axisLine: { lineStyle: { color: '#8392A5' } },
+                        axisTick: { show: false },
+                        splitLine: { show: false },
+                        axisLabel: { show: false },
+                        splitNumber: 20,
+                        min: 'dataMin',
+                        max: 'dataMax'
+                    }
+                ],
+                yAxis: [
+                    {
+                        scale: true,
+                        axisLine: { lineStyle: { color: '#8392A5' } }
                     },
-                    grid: [
-                        {
-                            left: '10%',
-                            right: '8%',
-                            height: '50%'
-                        },
-                        {
-                            left: '10%',
-                            right: '8%',
-                            top: '63%',
-                            height: '16%'
-                        }
-                    ],
-                    xAxis: [
-                        {
-                            
-                            type: 'category',
-                            data: this.dates,
-                            scale: true,
-                            boundaryGap : false,
-                            axisLine: { lineStyle: { color: '#8392A5' } },
-                            splitLine: {show: false},
-                            splitNumber: 20,
-                            min: 'dataMin',
-                            max: 'dataMax',
-                            axisPointer: {
-                                z: 100
-                            }
-                        },
-                        {
-                            type: 'category',
-                            gridIndex: 1,
-                            data: this.dates,
-                            scale: true,
-                            boundaryGap : false,
-                            axisLine: { lineStyle: { color: '#8392A5' } },
-                            axisTick: {show: false},
-                            splitLine: {show: false},
-                            axisLabel: {show: false},
-                            splitNumber: 20,
-                            min: 'dataMin',
-                            max: 'dataMax'
-                        }
-                    ],
-                    yAxis: [
-                        {
-                            scale: true,
-                            axisLine: { lineStyle: { color: '#8392A5' } }
-                        },
-                        {
-                            scale: true,
-                            gridIndex: 1,
-                            splitNumber: 2,
-                            axisLine: { lineStyle: { color: '#8392A5' } },
-                            axisTick: {show: false}
-                        }
-                    ],
-                    dataZoom: [
-                        {
-                            type: 'inside',
-                            xAxisIndex: [0, 1],
-                            start: 0,
-                            end: 100
-                        },
-                        {
-                            dataBackground: {
+                    {
+                        scale: true,
+                        gridIndex: 1,
+                        splitNumber: 2,
+                        axisLine: { lineStyle: { color: '#8392A5' } },
+                        axisTick: { show: false }
+                    }
+                ],
+                dataZoom: [
+                    {
+                        type: 'inside',
+                        xAxisIndex: [0, 1],
+                        start: 90,
+                        end: 100
+                    },
+                    {
+                        dataBackground: {
                             areaStyle: {
                                 color: '#8392A5'
                             },
@@ -184,8 +293,10 @@ export class SearchComponent implements OnInit {
                                 opacity: 0.8,
                                 color: '#8392A5'
                             }
-                        },textStyle: {
-                            color: '#8392A5'
+                        }, textStyle: {
+                            color: '#8392A5',
+                            fontFamily: 'Lato',
+                            fontSize: '16'
                         }, handleStyle: {
                             color: '#fff',
                             shadowBlur: 3,
@@ -193,91 +304,161 @@ export class SearchComponent implements OnInit {
                             shadowOffsetX: 2,
                             shadowOffsetY: 2
                         },
-                            show: true,
-                            xAxisIndex: [0, 1],
-                            type: 'slider',
-                            top: '85%',
-                            start: 98,
-                            end: 100
+                        show: true,
+                        xAxisIndex: [0, 1],
+                        type: 'slider',
+                        top: '85%',
+                        start: 98,
+                        end: 100
+                    }
+                ],
+                series: [
+                    {
+                        name: company,
+                        type: 'candlestick',
+                        data: that.candles,
+                        itemStyle: {
+                            normal: {
+                                color: '#218c74',
+                                color0: '#b33939',
+                                borderColor: null,
+                                borderColor0: null
+                            }
                         }
-                    ],
-                    series: [
-                        {
-                            name: 'AAPL',
-                            type: 'candlestick',
-                            data: this.candles,
-                            itemStyle: {
-                                normal: {
-                                    color: '#218c74',
-                                    color0: '#b33939',
-                                    borderColor: null,
-                                    borderColor0: null
-                                }
+                    },
+                    {
+                        name: 'MA5',
+                        type: 'line',
+                        data: that.calculateMA(5, that.candles),
+                        smooth: true,
+                        showSymbol: false,
+                        lineStyle: {
+                            normal: {
+                                width: 1
                             }
-                        },
-                        {
-                            name: 'MA5',
-                            type: 'line',
-                            data: this.calculateMA(5, this.candles),
-                            smooth: true,
-                            showSymbol: false,
-                            lineStyle: {
-                                normal: {
-                                    width: 1
-                                }
-                            }
-                        },
-                        {
-                            name: 'MA10',
-                            type: 'line',
-                            showSymbol: false,
-                            data: this.calculateMA(10, this.candles),
-                            smooth: true,
-                            lineStyle: {
-                                normal: {
-                                    width: 1
-                                }
-                            }
-                        },
-                        {
-                            name: 'MA20',
-                            type: 'line',
-                            showSymbol: false,
-                            data: this.calculateMA(20, this.candles),
-                            smooth: true,
-                            lineStyle: {
-                                normal: {
-                                    width: 1
-                                }
-                            }
-                        },
-                        {
-                            name: 'MA30',
-                            type: 'line',
-                            showSymbol: false,
-                            data: this.calculateMA(30, this.candles),
-                            smooth: true,
-                            lineStyle: {
-                                normal: {
-                                    width: 1
-                                }
-                            }
-                        },
-                        {
-                            name: 'Volume',
-                            type: 'bar',
-                            xAxisIndex: 1,
-                            yAxisIndex: 1,
-                            data: this.volumes
                         }
-                    ]
-                };
-                this.stockChart.setOption(this.stockChartOptions);
+                    },
+                    {
+                        name: 'MA10',
+                        type: 'line',
+                        showSymbol: false,
+                        data: that.calculateMA(10, that.candles),
+                        smooth: true,
+                        lineStyle: {
+                            normal: {
+                                width: 1
+                            }
+                        }
+                    },
+                    {
+                        name: 'MA20',
+                        type: 'line',
+                        showSymbol: false,
+                        data: that.calculateMA(20, that.candles),
+                        smooth: true,
+                        lineStyle: {
+                            normal: {
+                                width: 1
+                            }
+                        }
+                    },
+                    {
+                        name: 'MA30',
+                        type: 'line',
+                        showSymbol: false,
+                        data: that.calculateMA(30, that.candles),
+                        smooth: true,
+                        lineStyle: {
+                            normal: {
+                                width: 1
+                            }
+                        }
+                    },
+                    {
+                        name: 'Volume',
+                        type: 'bar',
+                        xAxisIndex: 1,
+                        yAxisIndex: 1,
+                        data: that.volumes
+                    }
+                ]
+            };
+            callback();
 
+        }
+
+        async function getSubscription(ticker: string) {
+            const headers = new HttpHeaders({
+                'Content-Type': 'application/json; charset=utf-8',
+                'x-auth-token': JSON.parse(localStorage.getItem("currentUser")).account.token
             });
+            return await that.http.get(APP_DI_CONFIG.apiEndpoint + '/subscriptions/' + ticker, { headers }).toPromise().then((data) => {
+                return data;
+            });
+        }
+
+        document.getElementById('stockChart').style.height = (window.innerHeight - window.innerWidth * 2 / 100 - 20) + "px";
+
+        this.companiesForm = this.fb.group({
+            suggestionInput: null
+        });
+        this.suggestions = this.fb.group({
+            interval: "0"
+        });
+        getSubscription(this.currentTicker).then((value) => {
+            this.suggestions.controls.interval.setValue(value["candleSize"]);
+        });
+        this.companiesForm
+            .get('suggestionInput')
+            .valueChanges
+            .pipe(
+                debounceTime(300),
+                tap(() => this.isLoading = true),
+                switchMap(value => this.suggestionService.search(value)
+                    .pipe(
+                        finalize(() => this.isLoading = false),
+                    )
+                )
+            )
+            .subscribe(suggestion => this.filteredSuggestions = suggestion.results);
+        this.displayFn = (suggestion: Suggestion) => {
+            if (suggestion) {
+                getCandleData(suggestion.symbol, "30m", "20d", () => {
+                    setOptions(suggestion.symbol, () => {
+                        this.stockChart.setOption(this.stockChartOptions);
+                    });
+                });
+                getSubscription(suggestion.symbol).then((value) => {
+                    this.suggestions.controls.interval.setValue(value["candleSize"]);
+                });
+                this.currentTicker = suggestion.symbol;
+                return suggestion.symbol;
+            }
+        }
+        getCandleData(this.currentTicker, "30m", "20d", () => {
+            setOptions(this.currentTicker, () => {
+                this.stockChart.setOption(this.stockChartOptions);
+            });
+        });
+
     }
+    @HostListener('window:resize', ['$event'])
     onResize(event) {
         document.getElementById('stockChart').style.height = (window.innerHeight - window.innerWidth * 2 / 100 - 20) + "px";
-        this.stockChart.setOption(this.stockChartOptions);
+        this.stockChart.resize();
+    }
+    submitSubscription() {
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json; charset=utf-8',
+            'x-auth-token': JSON.parse(localStorage.getItem("currentUser")).account.token
+        });
+        this.http.post(APP_DI_CONFIG.apiEndpoint + '/subscriptions', {
+            'ticker': this.currentTicker,
+            'candleSize': this.suggestions.controls.interval.value
+        }, { headers }).toPromise().then((data) => {
+            this.toastr.info('Your subscription for ' +
+                this.currentTicker + ' is now set to: ' +
+                (this.suggestions.controls.interval.value == 0 ? "none" : this.suggestions.controls.interval.value), 'Subscription updated!', { timeOut: 3000, positionClass: "toast-top-right" });
+        });
     }
 }

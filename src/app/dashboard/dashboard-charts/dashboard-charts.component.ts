@@ -9,10 +9,10 @@ import * as echarts from 'echarts';
 export class DashboardChartsComponent implements OnInit {
 
   constructor() { }
-  performanceChart :any;
-  performanceChartOptions :any;
+  performanceChart: any;
+  performanceChartOptions: any;
 
-  ngOnInit(){
+  ngOnInit() {
     this.performanceChart = echarts.init(document.getElementById('bot-performance'));
     this.performanceChartOptions = {
       textStyle: {
@@ -37,21 +37,21 @@ export class DashboardChartsComponent implements OnInit {
         ]
       }],
       yAxis: [{
-          type: 'value'
+        type: 'value'
       }],
       series: [
         {
           name: 'Total Progress',
           type: 'line',
           smooth: true,
-          itemStyle: {normal: {areaStyle: {type: 'default'}}},
+          itemStyle: { normal: { areaStyle: { type: 'default' } } },
           data: [2, 7.1, 6.029, 2.8481, 5.9336, 8.0522, 12.3743]
         },
         {
           name: 'Daily Change',
           type: 'line',
           smooth: true,
-          itemStyle: {normal: {areaStyle: {type: 'default'}}},
+          itemStyle: { normal: { areaStyle: { type: 'default' } } },
           data: [2, 5, -1, -3, 3, 2, 4]
         }
       ]

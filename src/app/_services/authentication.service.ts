@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { User } from '../_models';
+import { APP_DI_CONFIG } from '../app-config.module';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
@@ -20,20 +21,20 @@ export class AuthenticationService {
     }
 
     login(username: string, password: string) {
-        return this.http.post<any>('//localhost:3000/api/accounts/authenticate', { email : username, password : password })
+        return this.http.post<any>(APP_DI_CONFIG.apiEndpoint + '/accounts/authenticate', { email: username, password: password })
             .pipe(map(acc => {
                 // login successful if there's a jwt token in the response
                 if (acc && acc.account.token) {
-                    
+
                     // store user details and jwt token in local storage to keep user logged in between page refreshes
                     localStorage.setItem('currentUser', JSON.stringify(acc));
                     this.currentUserSubject.next(acc);
                 }
                 return acc;
             },
-            error =>{
-                return error;
-            }));
+                error => {
+                    return error;
+                }));
     }
 
     logout() {
