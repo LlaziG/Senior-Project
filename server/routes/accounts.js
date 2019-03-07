@@ -6,7 +6,7 @@ const router = express.Router();
 
 const { Account, validate, validateAuth } = require('../models/accounts');
 const { auth, asyncEH } = require('../middleware/index');
-const { generateWallet } = require('../helpers/index');
+const { generateWallet, updateWallet } = require('../helpers/index');
 
 router.post('/', asyncEH(async (req, res) => {
     const wallet = await generateWallet();
@@ -24,6 +24,7 @@ router.post('/', asyncEH(async (req, res) => {
     account.password = await bcrypt.hash(account.password, salt);
 
     account = await account.save();
+    await updateWallet({ wallet: wallet._id, account: _.pick(account, ['id']) });
     res.send(_.pick(account, ['id', 'name', 'email', 'wallet']));
 }));
 
@@ -38,7 +39,7 @@ router.post('/authenticate', asyncEH(async (req, res) => {
     if (!validPassword) return res.status(400).send("Wrong Credentials");
 
     const token = account.generateAuthToken();
-    res.header({'x-auth-token' : token}).status(200).send(
+    res.header({ 'x-auth-token': token }).status(200).send(
         {
             account: {
                 email: account.email,

@@ -1,13 +1,9 @@
 import { Routes, RouterModule } from '@angular/router';
 
-import { AppComponent } from './app.component';
-
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { TransactionsComponent } from './dashboard/transactions/transactions.component';
-import { DashboardChartsComponent } from './dashboard/dashboard-charts/dashboard-charts.component';
 
 import { SearchComponent } from './search/search.component';
-import { LoginComponent } from './login/login.component';
+import { PortfolioComponent } from './portfolio/portfolio.component';
 
 import { AuthGuard } from './_guards';
 
@@ -23,6 +19,12 @@ const appRoutes: Routes = [
         component: SearchComponent,
         canActivate: [AuthGuard],
         data: { state: 'search' }
+    },
+    {
+        path: 'portfolio',
+        component: PortfolioComponent,
+        canActivate: [AuthGuard],
+        data: { state: 'portfolio' }
     },
 
     { path: '**', redirectTo: '' }

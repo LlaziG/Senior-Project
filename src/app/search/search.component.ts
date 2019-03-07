@@ -392,7 +392,7 @@ export class SearchComponent implements OnInit {
                 'Content-Type': 'application/json; charset=utf-8',
                 'x-auth-token': JSON.parse(localStorage.getItem("currentUser")).account.token
             });
-            return await that.http.get(APP_DI_CONFIG.apiEndpoint + '/subscriptions/' + ticker, { headers }).toPromise().then((data) => {
+            return await that.http.get(APP_DI_CONFIG.apiEndpoint + '/subscriptions/ticker/' + ticker, { headers }).toPromise().then((data) => {
                 return data;
             });
         }

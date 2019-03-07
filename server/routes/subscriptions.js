@@ -18,6 +18,7 @@ router.post('/', auth, asyncEH(async (req, res) => {
         ticker: req.body.ticker
     });
     if (subscription) {
+        subObj.profit = 0;
         _.extend(subscription, subObj);
         const { error } = validate(_.pick(subObj, Subscription.fillable));
         if (error) {
@@ -34,17 +35,36 @@ router.post('/', auth, asyncEH(async (req, res) => {
     }
 }));
 
-router.get("/:ticker", auth, asyncEH(async (req, res) => {
+router.delete("/ticker/:ticker", auth, asyncEH(async (req, res) => {
     const subscription = await Subscription.findOne({
         account: req.user._id,
         ticker: req.params.ticker
     });
-    if (!subscription) return res.send({'candleSize' : '0'});
+    if (!subscription) return res.status(400).send();
+    subscription.remove();
     res.send(subscription);
+}));
+
+
+router.get("/ticker/:ticker", auth, asyncEH(async (req, res) => {
+    const subscription = await Subscription.findOne({
+        account: req.user._id,
+        ticker: req.params.ticker
+    });
+    if (!subscription) return res.send({ 'candleSize': '0' });
+    res.send(subscription);
+}));
+
+router.get("/me", auth, asyncEH(async (req, res) => {
+    const subscriptions = await Subscription.find({ account: req.user._id }).sort('ticker');
+
+    if (!subscriptions) return res.send({});
+    res.send(subscriptions);
 }));
 
 router.get("/", asyncEH(async (req, res) => {
     const subscriptions = await Subscription.find().sort('account');
+    if (!subscriptions) return res.send({});
     res.send(subscriptions);
 }));
 module.exports = router;

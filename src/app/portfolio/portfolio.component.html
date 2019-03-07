@@ -1,0 +1,103 @@
+<div class="row">
+  <div class="col-12">
+    <div class="card bg-none flat">
+      <div class="card-header">
+        <h4 class="card-title text-white">Opened Positions</h4>
+        <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
+        <div class="heading-elements">
+          <ul class="list-inline mb-0">
+            <li><a data-action="collapse"><i class="ft-minus"></i></a></li>
+            <li><a data-action="reload"><i class="ft-rotate-cw"></i></a></li>
+            <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
+            <li><a data-action="close"><i class="ft-x"></i></a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="card-content collapse show">
+        <div class="card-body text-white">
+          <table class="table table-hover portfolio" cellspacing="0">
+            <thead>
+              <tr>
+                <th>Ticker</th>
+                <th>Position</th>
+                <th>Quantity</th>
+                <th>Total Price</th>
+                <th>Value</th>
+                <th>Net</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let position of portfolio">
+                <td>{{position.ticker}}</td>
+                <td>{{position.type}}</td>
+                <td>{{position.volume}}</td>
+                <td>{{position.price | currency:'USD' }}</td>
+                <td>{{position.value | currency:'USD' }}</td>
+                <td>{{position.profit | currency:'USD' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <div class="card bg-none flat">
+      <div class="card-header">
+        <h4 class="card-title text-white">Subscriptions</h4>
+        <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
+        <div class="heading-elements">
+          <ul class="list-inline mb-0">
+            <li><a data-action="collapse"><i class="ft-minus"></i></a></li>
+            <li><a data-action="reload"><i class="ft-rotate-cw"></i></a></li>
+            <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
+            <li><a data-action="close"><i class="ft-x"></i></a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="card-content collapse show">
+        <div class="card-body text-white">
+          <table class="table table-hover subscription" cellspacing="0">
+            <thead>
+              <tr>
+                <th>Ticker</th>
+                <th>Interval</th>
+                <th>Profit</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let subscription of subscriptions">
+                <td>{{subscription.ticker}}</td>
+                <td>
+                  <select id="{{ 'select-' + subscription.ticker }}">
+                    <option value="0" selected="{{subscription.candleSize == '0'? 'selected' : ''}}">Unsubscribe
+                    </option>
+                    <option value="1m" selected="{{subscription.candleSize == '1m'? 'selected' : ''}}">1 min</option>
+                    <option value="2m" selected="{{subscription.candleSize == '2m'? 'selected' : ''}}">2 min</option>
+                    <option value="5m" selected="{{subscription.candleSize == '5m'? 'selected' : ''}}">5 min</option>
+                    <option value="15m" selected="{{subscription.candleSize == '15m'? 'selected' : ''}}">15 min</option>
+                    <option value="30m" selected="{{subscription.candleSize == '30m'? 'selected' : ''}}">30 min</option>
+                    <option value="1h" selected="{{subscription.candleSize == '1h'? 'selected' : ''}}">1 hour</option>
+                  </select>
+                </td>
+                <td>{{subscription.profit | currency:'USD' }}</td>
+                <td>
+                  <div class="btn-group">
+                    <div id="{{ 'edit-' + subscription.ticker }}" class="btn btn-primary"
+                      (click)="editSubscription($event)">Edit</div>
+                    <div id="{{ 'delete-' + subscription.ticker }}" class="btn btn-light"
+                      (click)="deleteSubscription($event)">Unsubscribe</div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -10,7 +10,11 @@ const subscriptionSchema = new mongoose.Schema({
         type: String,
         required: true,
         maxlength: 5,
-        enum : ['0', '1m', '2m', '5m', '15m', '30m', '1h']
+        enum: ['0', '1m', '2m', '5m', '15m', '30m', '1h']
+    },
+    profit: {
+        type: Number,
+        default: 0
     },
     account: {
         type: mongoose.Schema.Types.ObjectId,
@@ -19,13 +23,14 @@ const subscriptionSchema = new mongoose.Schema({
     }
 });
 
-subscriptionSchema.statics.fillable = ['ticker', 'candleSize', 'account'];
+subscriptionSchema.statics.fillable = ['ticker', 'candleSize', 'account', 'profit'];
 const Subscription = mongoose.model('Subscription', subscriptionSchema);
 
 function validateSubscription(subscription) {
     const schema = {
         ticker: Joi.string().max(10).required(),
         candleSize: Joi.string().max(5).required(),
+        profit : Joi.number(),
         account: Joi.objectId().required()
     }
     return Joi.validate(subscription, schema);

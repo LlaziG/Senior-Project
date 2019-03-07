@@ -21,6 +21,8 @@ import { DashboardChartsComponent } from './dashboard/dashboard-charts/dashboard
 
 import { SearchComponent } from './search/search.component';
 
+import { PortfolioComponent } from './portfolio/portfolio.component';
+
 import { JwtInterceptor, ErrorInterceptor } from './_helpers';
 import { AuthenticationService, UserService, SuggestionService } from './_services';
 import { MaterialModule } from './material-module';
@@ -34,6 +36,7 @@ import { MaterialModule } from './material-module';
     SearchComponent,
     DashboardChartsComponent,
     LoginComponent,
+    PortfolioComponent
   ],
   imports: [
     AppConfigModule,

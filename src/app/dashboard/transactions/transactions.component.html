@@ -18,18 +18,24 @@
           <table class="table table-hover" cellspacing="0">
             <thead>
               <tr>
-                <th>Company</th>
+                <th>Ticker</th>
                 <th>Created At</th>
+                <th>Strategy</th>
                 <th>Type</th>
-                <th>Amount</th>
+                <th>Volume</th>
+                <th>Price</th>
+                <th>Total</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let transaction of transactions">
-                <td>{{transaction.company}}</td>
-                <td>{{transaction.createdAt}}</td>
+                <td>{{transaction.ticker}}</td>
+                <td>{{ transaction.dateTime | date : "medium"  }}</td>
+                <td>Strategy I</td>
                 <td>{{transaction.type}}</td>
-                <td>{{transaction.amount}}</td>
+                <td>{{transaction.volume}}</td>
+                <td>{{transaction.stockPrice | currency:'USD' }}</td>
+                <td>{{transaction.total | currency:'USD' }}</td>
               </tr>
             </tbody>
           </table>
