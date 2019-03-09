@@ -16,6 +16,10 @@ const TransactionSchema = new mongoose.Schema({
         required: true,
         default: Date.now
     },
+    strategy : {
+        type: String,
+        required: true
+    },
     stockPrice: {
         type: Number,
         min: 0,
@@ -37,13 +41,14 @@ const TransactionSchema = new mongoose.Schema({
     }
 });
 
-TransactionSchema.statics.fillable = ['account', 'ticker', 'dateTime', 'stockPrice', 'type', 'volume', 'total'];
+TransactionSchema.statics.fillable = ['account', 'ticker', 'dateTime', 'strategy', 'stockPrice', 'type', 'volume', 'total'];
 const Transaction = mongoose.model('Transaction', TransactionSchema);
 
 function validateTransaction(transaction) {
     const schema = {
         account: Joi.objectId().required(),
         ticker: Joi.string().required(),
+        strategy: Joi.string().required(),
         stockPrice: Joi.number().min(0).required(),
         type: Joi.string().required(),
         volume: Joi.number().min(0).required(),

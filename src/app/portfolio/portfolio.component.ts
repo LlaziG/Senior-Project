@@ -18,7 +18,6 @@ export class PortfolioComponent implements OnInit {
   portfolioDT: any;
   subscriptions: any[];
   subscriptionsDT: any;
-  headers: any;
 
   constructor(
     private http: HttpClient,

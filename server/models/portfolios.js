@@ -6,10 +6,14 @@ const portfolioSchema = new mongoose.Schema({
         required: true,
         maxlength: 10
     },
-    type : {
+    type: {
         type: String,
         required: true,
         enum: ['buy', 'sell', 'short', 'cover']
+    },
+    strategy: {
+        type: String,
+        required: true
     },
     volume: {
         type: Number,
@@ -27,15 +31,16 @@ const portfolioSchema = new mongoose.Schema({
     }
 });
 
-portfolioSchema.statics.fillable = ['ticker', 'type', 'volume', 'total', 'account'];
+portfolioSchema.statics.fillable = ['ticker', 'type', 'strategy', 'volume', 'total', 'account'];
 const Portfolio = mongoose.model('Portfolio', portfolioSchema);
 
 function validatePortfolio(portfolio) {
     const schema = {
         ticker: Joi.string().max(10).required(),
         type: Joi.string().required(),
-        volume : Joi.number().min(0).required(),
-        total : Joi.number().required(),
+        strategy: Joi.string().required(),
+        volume: Joi.number().min(0).required(),
+        total: Joi.number().required(),
         account: Joi.objectId().required()
     }
     return Joi.validate(portfolio, schema);

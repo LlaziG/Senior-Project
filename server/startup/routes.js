@@ -1,5 +1,5 @@
 const express = require('express');
-const { quotes, accounts, transactions, wallets, subscriptions, portfolios } = require('../routes/index');
+const { quotes, accounts, transactions, wallets, subscriptions, portfolios, strategies } = require('../routes/index');
 const { error, logger } = require('../middleware/index');
 const cors = require('cors');
 
@@ -14,5 +14,7 @@ module.exports = function (app) {
     app.use('/api/wallets', wallets);
     app.use('/api/subscriptions', subscriptions);
     app.use('/api/portfolios', portfolios);
+    app.use('/api/strategies', strategies);
+    
     app.use(error);
 }

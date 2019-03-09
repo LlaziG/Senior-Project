@@ -7,20 +7,21 @@ const { Transaction, validate } = require('../models/transactions');
 const { Portfolio } = require('../models/portfolios');
 const { Subscription } = require('../models/subscriptions');
 const { auth, asyncEH } = require('../middleware/index');
-const { updatePortfolio, updateSubscription, updateWallet } = require('../helpers/index');
+const { updatePortfolio, updateSubscription, updateWallet, updateStrategy } = require('../helpers/index');
 
 router.post('/', asyncEH(async (req, res) => {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
     let portfolioObj = await updatePortfolio(_.pick(req.body, Portfolio.fillable));
+    await updateStrategy(portfolioObj);
     if (!_.isUndefined(portfolioObj.closed)) {
         await updateSubscription(_.extend(_.pick(req.body, Subscription.fillable), portfolioObj));
         await updateWallet({
             account: req.body.account,
             available: req.body.total,
             type: req.body.type,
-            previous : portfolioObj.previous
+            previous: portfolioObj.previous
         });
     }
     else {
@@ -30,7 +31,7 @@ router.post('/', asyncEH(async (req, res) => {
             type: req.body.type
         });
     }
-    
+
     let transaction = new Transaction(req.body);
     transaction = await transaction.save();
     res.send(transaction);

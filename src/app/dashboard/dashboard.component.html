@@ -1,11 +1,11 @@
 <div class="row">
-    <div class="col-xl-3 col-lg-6 col-12">
-        <div class="card bg-gradient-danger">
+    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
+        <div class="card bg-gradient-info">
             <div class="card-content">
                 <div class="card-body">
                     <div class="media d-flex">
                         <div class="media-body text-white text-left">
-                            <h4 class="text-white">USD 3490.00</h4>
+                            <h4 class="text-white">$ {{netWorth | number}}</h4>
                             <span>Total Net Worth</span>
                         </div>
                         <div class="align-self-center">
@@ -16,13 +16,13 @@
             </div>
         </div>
     </div>
-    <div class="col-xl-3 col-lg-6 col-12">
-        <div class="card bg-gradient-success">
+    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
+        <div class="card bg-gradient-info">
             <div class="card-content">
                 <div class="card-body">
                     <div class="media d-flex">
                         <div class="media-body text-white text-left">
-                            <h4 class="text-white">USD 278.00</h4>
+                            <h4 class="text-white">$ {{available | number}}</h4>
                             <span>Available Funds</span>
                         </div>
                         <div class="align-self-center">
@@ -33,14 +33,14 @@
             </div>
         </div>
     </div>
-    <div class="col-xl-3 col-lg-6 col-12">
-        <div class="card bg-gradient-amber">
+    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
+        <div class="card bg-gradient-info">
             <div class="card-content">
                 <div class="card-body">
                     <div class="media d-flex">
                         <div class="media-body text-white text-left">
-                            <h4 class="text-white">4500</h4>
-                            <span>Airlines to Travel</span>
+                            <h4 class="text-white">$ {{provisions | number}}</h4>
+                            <span>Short Provisions</span>
                         </div>
                         <div class="align-self-center">
                             <i class="icon-plane text-white font-large-2 float-right"></i>
@@ -50,17 +50,53 @@
             </div>
         </div>
     </div>
-    <div class="col-xl-3 col-lg-6 col-12">
-        <div class="card bg-gradient-info">
+    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
+        <div class="" [ngClass]="{'card': true, ' bg-gradient-success': this.todayChange >= 0, ' bg-gradient-danger': this.todayChange < 0}">
             <div class="card-content">
                 <div class="card-body">
                     <div class="media d-flex">
                         <div class="media-body text-white text-left">
-                            <h4 class="text-white">1500</h4>
-                            <span>VIP Transports</span>
+                            <h4 class="text-white">$ {{todayChange | number : '1.0-2'}}/ {{todayChangeP | percent }}
+                            </h4>
+                            <span>Today</span>
                         </div>
                         <div class="align-self-center">
-                            <i class="icon-star text-white font-large-2 float-right"></i>
+                            <i class="icon-plane text-white font-large-2 float-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
+        <div class="" [ngClass]="{'card': true, ' bg-gradient-success': monthChange >= 0, ' bg-gradient-danger': monthChange < 0}">
+            <div class="card-content">
+                <div class="card-body">
+                    <div class="media d-flex">
+                        <div class="media-body text-white text-left">
+                            <h4 class="text-white">$ {{monthChange | number : '1.0-2'}}/ {{monthChangeP | percent }}
+                            </h4>
+                            <span>This Month</span>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="icon-plane text-white font-large-2 float-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
+        <div class="" [ngClass]="{'card': true, ' bg-gradient-success': ytdChange >= 0, ' bg-gradient-danger': ytdChange < 0}">
+            <div class="card-content">
+                <div class="card-body">
+                    <div class="media d-flex">
+                        <div class="media-body text-white text-left">
+                            <h4 class="text-white">$ {{ytdChange | number : '1.0-2'}}/ {{ytdChangeP | percent }}</h4>
+                            <span>YTD Change</span>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="icon-plane text-white font-large-2 float-right"></i>
                         </div>
                     </div>
                 </div>

@@ -29,7 +29,7 @@ async function updatePortfolio(obj) {
         }
         else {
             portfolio.remove();
-            return { closed: true, profit: obj.total + portfolio.total, previous: portfolio.total };
+            return _.extend(portfolio, { closed: true, profit: obj.total + portfolio.total, previous: portfolio.total, strategy: portfolio.strategy });
         }
     }
     else {

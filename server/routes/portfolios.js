@@ -1,12 +1,10 @@
-const _ = require("lodash");
-
 const express = require('express');
 const router = express.Router();
 
 
 const { Portfolio, validate } = require('../models/portfolios');
 const { auth, asyncEH } = require('../middleware/index');
-const { getQuotes } = require('../helpers/index');
+const { getTickersValue } = require('../helpers/index');
 
 
 router.get("/ticker/:ticker", auth, asyncEH(async (req, res) => {
@@ -17,8 +15,9 @@ router.get("/ticker/:ticker", auth, asyncEH(async (req, res) => {
 
     if (!portfolio) return res.status(400).send({});
 
-    const quotes = getQuotes([req.params.ticker]);
-    res.send(_.extend(_.pick(portfolio, Portfolio.fillable), { value: quotes[0] * portfolio.volume }));
+    await getTickersValue([req.params.ticker], portfolio, Portfolio, function (e, positions) {
+        res.send(positions);
+    });
 }));
 
 router.get("/me", auth, asyncEH(async (req, res) => {
@@ -27,24 +26,7 @@ router.get("/me", auth, asyncEH(async (req, res) => {
     if (!portfolios) return res.send({});
     let tickers = new Array();
     for (p of portfolios) tickers.push(p.ticker);
-    await getQuotes(tickers, function (e, quotes) {
-        let positions = new Array();
-        for (p in quotes) {
-            if (portfolios[p].type == "buy") {
-                positions.push(_.extend(_.pick(portfolios[p], Portfolio.fillable), {
-                    value: quotes[p] * portfolios[p].volume,
-                    price: -portfolios[p].total,
-                    profit: (quotes[p] * portfolios[p].volume) + portfolios[p].total
-                }));
-            }
-            else if (portfolios[p].type == "short") {
-                positions.push(_.extend(_.pick(portfolios[p], Portfolio.fillable), {
-                    value: quotes[p] * portfolios[p].volume,
-                    price: portfolios[p].total,
-                    profit: portfolios[p].total - (quotes[p] * portfolios[p].volume)
-                }));
-            }
-        }
+    await getTickersValue(tickers, portfolios, Portfolio, function (e, positions) {
         res.send(positions);
     });
 }));
