@@ -20,6 +20,16 @@ router.get("/ticker/:ticker", auth, asyncEH(async (req, res) => {
     });
 }));
 
+router.get("/", asyncEH(async (req, res) => {
+    const portfolios = await Portfolio.find().sort('account');
+    if (portfolios.length == 0) res.send([]);
+    let tickers = new Array();
+    for (p of portfolios) tickers.push(p.ticker);
+    await getTickersValue(tickers, portfolios, Portfolio, function (e, positions) {
+        res.send(positions);
+    });
+}));
+
 router.get("/me", auth, asyncEH(async (req, res) => {
     const portfolios = await Portfolio.find({ account: req.user._id }).sort('ticker');
 

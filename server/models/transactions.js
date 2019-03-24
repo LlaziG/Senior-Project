@@ -46,8 +46,8 @@ const Transaction = mongoose.model('Transaction', TransactionSchema);
 
 function validateTransaction(transaction) {
     const schema = {
-        account: Joi.objectId().required(),
         ticker: Joi.string().required(),
+        account: Joi.objectId().required(),
         strategy: Joi.string().required(),
         stockPrice: Joi.number().min(0).required(),
         type: Joi.string().required(),

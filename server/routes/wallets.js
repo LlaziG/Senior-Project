@@ -7,6 +7,12 @@ const { Wallet, validate } = require('../models/wallet');
 const { auth, asyncEH } = require('../middleware/index');
 
 
+router.get('/', asyncEH(async (req, res) => {
+    const wallet = await Wallet.find().sort('account');
+    if (!wallet) return res.status(400).send("Bad Request");
+
+    res.send(wallet);
+}));
 router.get('/wallet/:id', asyncEH(async (req, res) => {
     const wallet = await Wallet.findById(req.params.id);
     if (!wallet) return res.status(400).send("Bad Request");

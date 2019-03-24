@@ -1,3 +1,4 @@
 {
-	"name": "Stock Trading Bot"
+	"name": "Stock Trading Bot",
+	"tradingStrategies" : "MACD_STOCH,Fib"
 }

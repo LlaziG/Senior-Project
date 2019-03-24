@@ -21,7 +21,7 @@ export class DashboardChartsComponent implements OnInit {
   lineStrategySeries = new Array();
   lineDates = new Array();
   scatterStrategies = new Array();
-  colors = ["#16a085", "#2980b9", "#f1c40f", "#c0392b", "#8e44ad"]
+  colors = ["#16a085", "#2980b9", "#474787", "#c0392b", "#8e44ad"]
 
   ngOnInit() {
 

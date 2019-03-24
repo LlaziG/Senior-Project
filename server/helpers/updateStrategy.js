@@ -3,7 +3,6 @@ const _ = require("lodash");
 const { Strategy, validate } = require('../models/strategies');
 
 async function updateStrategy(obj) {
-    console.log(obj);
     const strategy = await Strategy.find({ account: obj.account, ticker: obj.ticker, strategy: obj.strategy }).sort('-date').limit(1);
     if (strategy.length != 0) {
         if (!_.isUndefined(obj.profit)) {
@@ -21,7 +20,6 @@ async function updateStrategy(obj) {
             console.log(error);
             return new Error(error.details[0].message);
         }
-        console.log("2");
         let strategy = new Strategy(strategyObj);
         strategy = await strategy.save();
         return strategy;
