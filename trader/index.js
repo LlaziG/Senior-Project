@@ -1,8 +1,21 @@
-const config = require('config');
-
 const server = require('./communcation/index');
-const helper = require('./helpers/index');
-const strategy = require('./strategies/index');
-const apiPath = config.get('apiPath');
+const trader = require('./modules/trader'); //Trader Module
+const strategySelector = require('./modules/strategySelector'); //StrategySelector Module
 
-require('./startup/trader')(server, helper, strategy, apiPath);
+async function traderModules() {
+    const marketState = await server.yahoo.isActiveHours();
+    if (marketState == "REGULAR") {
+        trader(); //Start Trader
+        strategySelectorFlag = false;
+    }
+    else if (!strategySelectorFlag) {
+        console.log("Time For Selecting");
+        strategySelector();
+        strategySelectorFlag = true;
+    }
+
+    setTimeout(() => { traderModules(); }, 60000);
+}
+traderModules();
+let strategySelectorFlag = false;
+

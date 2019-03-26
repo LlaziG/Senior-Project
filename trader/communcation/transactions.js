@@ -1,6 +1,9 @@
+const config = require('config');
+const apiPath = config.get('apiPath');
+
 const request = require('request');
 
-async function postTransaction(apiPath, obj) {
+async function postTransaction(obj) {
     const p = new Promise((resolve, reject) => {
         request.post({
             headers: { 'content-type': 'application/json' },
@@ -8,7 +11,6 @@ async function postTransaction(apiPath, obj) {
             json: obj
         }, function (error, response, body) {
             if (!error && response.statusCode == 200) {
-                console.log("transaction resolved: ", obj);
                 resolve(body);
             }
             else {

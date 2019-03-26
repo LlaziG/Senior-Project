@@ -34,7 +34,7 @@ router.get("/me/dates", auth, asyncEH(async (req, res) => {
         },
         { $sort: { "_id.strategy": 1, "_id.year": 1, "_id.month": 1, "_id.day": 1 } }]);
 
-    if (!strategies) return res.send({});
+    if (strategies.length == 0) return res.send([]);
 
     res.send(strategies);
 }));
@@ -52,7 +52,7 @@ router.get("/me/grouped", auth, asyncEH(async (req, res) => {
                 profit: { $sum: "$profit" }
             }
         }]);
-    if (!strategies) return res.send({});
+    if (strategies.length == 0) return res.send([]);
 
     res.send(strategies);
 }));
@@ -73,7 +73,7 @@ router.get("/me/year", auth, asyncEH(async (req, res) => {
         { $limit: 2 }
     ]);
 
-    if (!strategies) return res.send({});
+    if (strategies.length == 0) return res.send([]);
 
     res.send(strategies);
 }));
@@ -95,7 +95,7 @@ router.get("/me/month", auth, asyncEH(async (req, res) => {
         { $limit: 2 }
     ]);
 
-    if (!strategies) return res.send({});
+    if (strategies.length == 0) return res.send([]);
 
     res.send(strategies);
 }));
@@ -118,7 +118,7 @@ router.get("/me/day", auth, asyncEH(async (req, res) => {
         { $limit: 2 }
     ]);
 
-    if (!strategies) return res.send({});
+    if (strategies.length == 0) return res.send([]);
 
     res.send(strategies);
 }));

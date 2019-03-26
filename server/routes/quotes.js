@@ -39,11 +39,21 @@ router.get('/quote/:tickers', asyncEH(async (req, res) => {
 		if (!error && response.statusCode == 200) {
 			let quotes = new Object();
 			const tickers = req.params.tickers.split(",");
-			console.log(tickers[0]);
 			for (i in JSON.parse(body).quoteResponse.result) {
 				quotes[tickers[i]] = JSON.parse(body).quoteResponse.result[i].regularMarketPrice.raw
 			}
 			res.send(quotes);
+		}
+		else {
+			res.status(400).send({ error: 'Bad Request' });
+		}
+	});
+}));
+
+router.get('/activeHours', asyncEH(async (req, res) => {
+	request(`https://query1.finance.yahoo.com/v7/finance/quote?formatted=true&symbols=AAPL`, function (error, response, body) {
+		if (!error && response.statusCode == 200) {
+			res.send(JSON.parse(body).quoteResponse.result[0].marketState);
 		}
 		else {
 			res.status(400).send({ error: 'Bad Request' });

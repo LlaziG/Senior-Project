@@ -6,13 +6,13 @@ const router = express.Router();
 
 const { Subscription, validate } = require('../models/subscriptions');
 const { auth, asyncEH } = require('../middleware/index');
+ObjectId = require('mongodb').ObjectID;
 
 router.post('/', auth, asyncEH(async (req, res) => {
     let subObj = req.body;
     subObj.account = req.user._id;
     tradingStragestrategies = _.split(config.get('tradingStrategies'), ',');
     subObj.strategy = tradingStragestrategies[_.random(0, tradingStragestrategies.length - 1)];
-    console.log(subObj);
 
     const { error } = validate(subObj);
     if (error) return res.status(400).send(error.details[0].message);
@@ -37,6 +37,14 @@ router.post('/', auth, asyncEH(async (req, res) => {
         subscription = await subscription.save();
         res.send(subscription);
     }
+}));
+router.put('/:id', asyncEH(async (req, res) => {
+    if(!ObjectId.isValid(req.params.id)) return res.status(400).send({});
+    const subscription = await Subscription.findOne({ _id: req.params.id });
+    if (!subscription) return res.status(400).send({});
+    _.extend(subscription, req.body);
+    subscription.save();
+    return res.status(200).send(subscription);
 }));
 
 router.delete("/ticker/:ticker", auth, asyncEH(async (req, res) => {

@@ -13,9 +13,8 @@ const crossunder = (x, y, i) => {
 
 function getQuote(ohlcv, type) {
     const ta = new taMath(ohlcv, taMath.objectFormat);
-
     if (type == "now") { return calculateStrategy(ta, ohlcv.close.length - 1, ohlcv.close.length, ohlcv.time) }
-    else if (type == "all") { return calculateStrategy(ta, 0, ohlcv.close.length, ohlcv.timestamp) }
+    else if (type == "all") { return calculateStrategy(ta, 0, ohlcv.close.length -1, ohlcv.time) }
 }
 function calculateStrategy(ta, begin, end, timestamp) {
     const macd = taMath.macd(ta.$close);

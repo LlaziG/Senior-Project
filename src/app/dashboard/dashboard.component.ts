@@ -49,17 +49,17 @@ export class DashboardComponent implements OnInit {
     });
     this.http.get(APP_DI_CONFIG.apiEndpoint + '/portfolios/me', { headers }).toPromise().then((portfolioData: any) => {
       var portfolioValue = 0;
-
+      
       portfolioData.forEach(pos => {
-        portfolioValue += pos.profit
+        portfolioValue += pos.value
       });
       this.http.get(APP_DI_CONFIG.apiEndpoint + '/wallets/me', { headers }).toPromise().then((walletData: any) => {
-        this.netWorth = portfolioValue + walletData.available - walletData.provisions;
+        this.netWorth = portfolioValue + walletData.available - walletData.provisions*2;
         this.available = walletData.available - walletData.provisions;
         this.provisions = walletData.provisions;
 
         this.http.get(APP_DI_CONFIG.apiEndpoint + '/strategies/me/day', { headers }).toPromise().then((strategiesData: any) => {
-          if(this.netWorth != 0) {
+          if(this.netWorth != 0 && strategiesData.length != 0) {
             this.todayChange = strategiesData[0].profit;
             this.todayChangeP = strategiesData[0].profit / this.netWorth;
           }
@@ -69,7 +69,7 @@ export class DashboardComponent implements OnInit {
           }
         });
         this.http.get(APP_DI_CONFIG.apiEndpoint + '/strategies/me/month', { headers }).toPromise().then((strategiesData: any) => {
-          if(this.netWorth != 0) {
+          if(this.netWorth != 0 && strategiesData.length != 0){
             this.monthChange = strategiesData[0].profit;
             this.monthChangeP = strategiesData[0].profit / this.netWorth;
           }
@@ -79,7 +79,7 @@ export class DashboardComponent implements OnInit {
           }
         });
         this.http.get(APP_DI_CONFIG.apiEndpoint + '/strategies/me/year', { headers }).toPromise().then((strategiesData: any) => {
-          if(this.netWorth != 0) {
+          if(this.netWorth != 0 && strategiesData.length != 0) {
             this.ytdChange = strategiesData[0].profit;
             this.ytdChangeP = strategiesData[0].profit / this.netWorth;
           }

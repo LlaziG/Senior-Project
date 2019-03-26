@@ -33,7 +33,7 @@ router.get("/", asyncEH(async (req, res) => {
 router.get("/me", auth, asyncEH(async (req, res) => {
     const portfolios = await Portfolio.find({ account: req.user._id }).sort('ticker');
 
-    if (!portfolios) return res.send({});
+    if (portfolios.length == 0) return res.send([]);
     let tickers = new Array();
     for (p of portfolios) tickers.push(p.ticker);
     await getTickersValue(tickers, portfolios, Portfolio, function (e, positions) {
