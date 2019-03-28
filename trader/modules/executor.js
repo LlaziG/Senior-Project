@@ -1,9 +1,8 @@
 module.exports = async function executor(server, strategy, key, subscriptions, subscription, portfolios, wallets, results) {
     let transactionData = new Object();
-    
+
     if (results[0].order == "HOLD") {
         //Continue to next
-        console.log("SKIPPED: ", subscription.strategy, subscription.ticker, subscription.candleSize);
         return { action: "SKIPPED", strategy: subscription.strategy, ticker: subscription.ticker, candleSize: subscription.candleSize };
     }
     else {

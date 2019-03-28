@@ -14,7 +14,7 @@ async function traderModules() {
         strategySelectorFlag = true;
     }
 
-    setTimeout(() => { traderModules(); }, 60000);
+    setTimeout(() => { traderModules(); }, 20000);
 }
 traderModules();
 let strategySelectorFlag = false;

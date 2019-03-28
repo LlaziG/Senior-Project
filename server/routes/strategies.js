@@ -69,7 +69,7 @@ router.get("/me/year", auth, asyncEH(async (req, res) => {
                 profit: { $sum: "$profit" }
             }
         },
-        { $sort: { "_id.year": -1} },
+        { $sort: { "_id.year": -1 } },
         { $limit: 2 }
     ]);
 
@@ -116,6 +116,22 @@ router.get("/me/day", auth, asyncEH(async (req, res) => {
         },
         { $sort: { "_id.year": -1, "_id.month": -1, "_id.day": -1 } },
         { $limit: 2 }
+    ]);
+
+    if (strategies.length == 0) return res.send([]);
+
+    res.send(strategies);
+}));
+router.get("/me/value", auth, asyncEH(async (req, res) => {
+    const strategies = await Strategy.aggregate([
+        { $match: { account: ObjectId(req.user._id) } },
+        {
+            $group:
+            {
+                _id: "$account",
+                profit: { $sum: "$profit" }
+            }
+        }
     ]);
 
     if (strategies.length == 0) return res.send([]);

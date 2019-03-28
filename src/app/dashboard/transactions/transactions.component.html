@@ -31,7 +31,7 @@
               <tr *ngFor="let transaction of transactions">
                 <td>{{transaction.ticker}}</td>
                 <td>{{ transaction.dateTime | date : "medium"  }}</td>
-                <td>Strategy I</td>
+                <td>{{transaction.strategy}}</td>
                 <td>{{transaction.type}}</td>
                 <td>{{transaction.volume}}</td>
                 <td>{{transaction.stockPrice | currency:'USD' }}</td>

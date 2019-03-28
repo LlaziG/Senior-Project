@@ -16,7 +16,6 @@ module.exports = function trader() {
         let subscriptions = helper.splitObjByAccounts(values[0]);
         let portfolios = helper.splitObjByAccounts(values[1]);
         let wallets = helper.splitObjByAccounts(values[2]);
-
         //For each Account
         await Promise.all(Object.keys(subscriptions).map(async (key) => {
             //For each of its subscriptions
@@ -41,7 +40,7 @@ module.exports = function trader() {
 
                         })
                         .catch(err => {
-                            console.log(err);
+                            console.log(err, subscription.ticker);
                         });
                     return traderObj;
                 }
@@ -54,7 +53,7 @@ module.exports = function trader() {
                 });
         }))
             .then(() => {
-                console.log("--------------WAITING: 60s--------------");
+                console.log("--------------BATCH COMPLETE - WAITING: 20s--------------");
             }).catch(err => {
                 console.log(err);
             });

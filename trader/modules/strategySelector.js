@@ -1,9 +1,8 @@
-const config = require('config');
-const strategies = config.get('strategies').toLowerCase().split(",");
 
 const server = require('../communcation/index');
 const helper = require('../helpers/index');
 const strategy = require('../strategies/index');
+const strategies = Object.keys(strategy);
 
 //Modules
 const stopLoss = require('./stopLoss');
@@ -104,7 +103,7 @@ function compareProfit(ohlcv, results) {
         }
     }
     for (key of Object.keys(profits)) {
-        if (profits[maxProfitStrategy] > profits[key]) maxProfitStrategy = key;
+        if (profits[maxProfitStrategy] < profits[key]) maxProfitStrategy = key;
     }
     return maxProfitStrategy;
 }

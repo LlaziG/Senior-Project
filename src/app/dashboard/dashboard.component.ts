@@ -48,45 +48,55 @@ export class DashboardComponent implements OnInit {
       'x-auth-token': JSON.parse(localStorage.getItem("currentUser")).account.token
     });
     this.http.get(APP_DI_CONFIG.apiEndpoint + '/portfolios/me', { headers }).toPromise().then((portfolioData: any) => {
-      var portfolioValue = 0;
-      
+      var portfolioProfit = 0;
+
       portfolioData.forEach(pos => {
-        portfolioValue += pos.value
+        portfolioProfit += pos.profit
       });
       this.http.get(APP_DI_CONFIG.apiEndpoint + '/wallets/me', { headers }).toPromise().then((walletData: any) => {
-        this.netWorth = portfolioValue + walletData.available - walletData.provisions*2;
-        this.available = walletData.available - walletData.provisions;
-        this.provisions = walletData.provisions;
+        this.http.get(APP_DI_CONFIG.apiEndpoint + '/strategies/me/value', { headers }).toPromise().then((strategyProfit: any) => {
+          if(strategyProfit.length == 0){
+            this.netWorth = walletData.invested;
+            this.available = walletData.available - walletData.provisions;
+            this.provisions = walletData.provisions;
+          }
+          else{
+            this.netWorth = walletData.invested + strategyProfit[0].profit + portfolioProfit;
+            console.log("Portfolio Profit: ", portfolioProfit, "Strategy Profit: ", strategyProfit[0].profit);
+            this.available = walletData.available - walletData.provisions;
+            this.provisions = walletData.provisions;
+          }
 
-        this.http.get(APP_DI_CONFIG.apiEndpoint + '/strategies/me/day', { headers }).toPromise().then((strategiesData: any) => {
-          if(this.netWorth != 0 && strategiesData.length != 0) {
-            this.todayChange = strategiesData[0].profit;
-            this.todayChangeP = strategiesData[0].profit / this.netWorth;
-          }
-          else {
-            this.todayChange = 0;
-            this.todayChangeP = 0;
-          }
-        });
-        this.http.get(APP_DI_CONFIG.apiEndpoint + '/strategies/me/month', { headers }).toPromise().then((strategiesData: any) => {
-          if(this.netWorth != 0 && strategiesData.length != 0){
-            this.monthChange = strategiesData[0].profit;
-            this.monthChangeP = strategiesData[0].profit / this.netWorth;
-          }
-          else {
-            this.monthChange = 0;
-            this.monthChangeP = 0;
-          }
-        });
-        this.http.get(APP_DI_CONFIG.apiEndpoint + '/strategies/me/year', { headers }).toPromise().then((strategiesData: any) => {
-          if(this.netWorth != 0 && strategiesData.length != 0) {
-            this.ytdChange = strategiesData[0].profit;
-            this.ytdChangeP = strategiesData[0].profit / this.netWorth;
-          }
-          else {
-            this.ytdChange = 0;
-            this.ytdChangeP = 0;
-          }
+          this.http.get(APP_DI_CONFIG.apiEndpoint + '/strategies/me/day', { headers }).toPromise().then((strategiesData: any) => {
+            if (this.netWorth != 0 && strategiesData.length != 0) {
+              this.todayChange = strategiesData[0].profit;
+              this.todayChangeP = strategiesData[0].profit / this.netWorth;
+            }
+            else {
+              this.todayChange = 0;
+              this.todayChangeP = 0;
+            }
+          });
+          this.http.get(APP_DI_CONFIG.apiEndpoint + '/strategies/me/month', { headers }).toPromise().then((strategiesData: any) => {
+            if (this.netWorth != 0 && strategiesData.length != 0) {
+              this.monthChange = strategiesData[0].profit;
+              this.monthChangeP = strategiesData[0].profit / this.netWorth;
+            }
+            else {
+              this.monthChange = 0;
+              this.monthChangeP = 0;
+            }
+          });
+          this.http.get(APP_DI_CONFIG.apiEndpoint + '/strategies/me/year', { headers }).toPromise().then((strategiesData: any) => {
+            if (this.netWorth != 0 && strategiesData.length != 0) {
+              this.ytdChange = strategiesData[0].profit;
+              this.ytdChangeP = strategiesData[0].profit / this.netWorth;
+            }
+            else {
+              this.ytdChange = 0;
+              this.ytdChangeP = 0;
+            }
+          });
         });
       });
     });

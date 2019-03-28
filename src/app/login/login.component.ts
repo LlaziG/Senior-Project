@@ -26,6 +26,10 @@ export class LoginComponent implements OnInit {
       if (localStorage.getItem('currentUser')) {
         this.loginSuccessful(document.querySelector(".loginButton"), "");
       }
+      else {
+        this.addAnimations();
+
+      }
     }, 1);
 
 
@@ -65,6 +69,20 @@ export class LoginComponent implements OnInit {
           });
     }
   }
+  addAnimations() {
+    const loginSideBar = document.getElementsByClassName("loginSideBar")[0];
+    
+    loginSideBar.setAttribute("style", "-moz-transition: all 1000ms cubic-bezier(0.23, 1, 0.32, 1);-webkit-transition: all 1000ms cubic-bezier(0.23, 1, 0.32, 1);transition:all 1000ms cubic-bezier(0.23, 1, 0.32, 1);");
+    loginSideBar.querySelector(".menu").setAttribute("style", "-moz-transition: all 1000ms cubic-bezier(0.23, 1, 0.32, 1);-webkit-transition: all 1000ms cubic-bezier(0.23, 1, 0.32, 1);transition:all 1000ms cubic-bezier(0.23, 1, 0.32, 1);");
+    loginSideBar.querySelector(".loginForm").setAttribute("style", "display:block;-moz-transition: all 1000ms cubic-bezier(0.23, 1, 0.32, 1);-webkit-transition: all 1000ms cubic-bezier(0.23, 1, 0.32, 1);transition:all 1000ms cubic-bezier(0.23, 1, 0.32, 1);");
+    loginSideBar.querySelector(".login input").setAttribute("style", "-moz-transition: all 400ms cubic-bezier(0.77, 0, 0.175, 1);-webkit-transition: all 400ms cubic-bezier(0.77, 0, 0.175, 1);transition:all 400ms cubic-bezier(0.77, 0, 0.175, 1);");
+    loginSideBar.querySelector(".loginButton").setAttribute("style", "-moz-transition: all 400ms cubic-bezier(0.77, 0, 0.175, 1);-webkit-transition: all 400ms cubic-bezier(0.77, 0, 0.175, 1);transition:all 400ms cubic-bezier(0.77, 0, 0.175, 1);") 
+    loginSideBar.querySelectorAll(".loginUsername, .loginPassword, .loginButton").forEach(el =>{
+      el.setAttribute("style", "-moz-transition: all 600ms cubic-bezier(0.77, 0, 0.175, 1);-webkit-transition: all 600ms cubic-bezier(0.77, 0, 0.175, 1);transition:all 600ms cubic-bezier(0.77, 0, 0.175, 1);")
+    })
+    loginSideBar.querySelector(".loginName").setAttribute("style", "-moz-transition: all 800ms cubic-bezier(0.23, 1, 0.32, 1);-webkit-transition: all 800ms cubic-bezier(0.23, 1, 0.32, 1);transition:all 800ms cubic-bezier(0.23, 1, 0.32, 1);")
+    loginSideBar.querySelector(".loginName i").setAttribute("style", "-moz-transition: all 1000ms cubic-bezier(0.23, 1, 0.32, 1);-webkit-transition: all 1000ms cubic-bezier(0.23, 1, 0.32, 1);transition:all 1000ms cubic-bezier(0.23, 1, 0.32, 1);")
+  }
   loginSuccessful(element: any, data: any) {
     this.router.navigate([this.returnUrl]);
     document.getElementsByClassName("loginUsername")[0].classList.add("hidden");
@@ -75,13 +93,15 @@ export class LoginComponent implements OnInit {
     document.getElementsByClassName("loginButton")[0].setAttribute('disabled', 'true');
 
 
-
     setTimeout(() => {
       element.classList.remove("processing");
       element.classList.remove("error");
       document.getElementsByClassName("loginSideBar")[0].classList.add("sideBar");
       this.email.value = "";
       this.password.value = "";
+      setTimeout(() => {
+        this.addAnimations();
+      }, 1000);
       //Logout
       document.querySelector('.sideBar .image img').addEventListener("click", () => {
         element.querySelector("div").style.display = "none";
