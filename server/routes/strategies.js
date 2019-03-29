@@ -32,7 +32,7 @@ router.get("/me/dates", auth, asyncEH(async (req, res) => {
                 profit: { $sum: "$profit" }
             }
         },
-        { $sort: { "_id.strategy": 1, "_id.year": 1, "_id.month": 1, "_id.day": 1 } }]);
+        { $sort: { "_id.year": 1, "_id.month": 1, "_id.day": 1, "_id.strategy": 1 } }]);
 
     if (strategies.length == 0) return res.send([]);
 

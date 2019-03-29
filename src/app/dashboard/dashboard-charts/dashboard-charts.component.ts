@@ -7,7 +7,7 @@ import * as echarts from 'echarts';
 @Component({
   selector: 'app-dashboard-charts',
   templateUrl: './dashboard-charts.component.html',
-  styleUrls: ['./dashboard-charts.component.css']
+  styleUrls: ['./dashboard-charts.component.scss']
 })
 export class DashboardChartsComponent implements OnInit {
 

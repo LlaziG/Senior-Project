@@ -53,7 +53,7 @@ router.get('/quote/:tickers', asyncEH(async (req, res) => {
 router.get('/activeHours', asyncEH(async (req, res) => {
 	request(`https://query1.finance.yahoo.com/v7/finance/quote?formatted=true&symbols=AAPL`, function (error, response, body) {
 		if (!error && response.statusCode == 200) {
-			res.send(JSON.parse(body).quoteResponse.result[0].marketState);
+			res.send({marketState : JSON.parse(body).quoteResponse.result[0].marketState});
 		}
 		else {
 			res.status(400).send({ error: 'Bad Request' });

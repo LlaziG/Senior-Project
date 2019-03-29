@@ -41,8 +41,8 @@ module.exports = async function executor(server, strategy, key, subscriptions, s
             transactionData.ticker = subscription.ticker;
             transactionData.type = results[0].order == "BUY" ? "buy" : "short";
             transactionData.stockPrice = JSON.parse(await server.yahoo.getQuote(subscription.ticker))[subscription.ticker];
-            transactionData.volume = Math.floor(Math.min(wallets[key][0].available - wallets[key][0].provisions,
-                (wallets[key][0].available - wallets[key][0].provisions) / (subscriptions[key].length - openPositions),
+            transactionData.volume = Math.floor(Math.min(wallets[key][0].available - wallets[key][0].provisions*2,
+                (wallets[key][0].available - wallets[key][0].provisions*2) / (subscriptions[key].length - openPositions),
                 wallets[key][0].invested * 0.1) / transactionData.stockPrice);
             transactionData.strategy = subscription.strategy;
             transactionData.total = transactionData.stockPrice * transactionData.volume * multiplier;

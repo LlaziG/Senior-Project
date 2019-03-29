@@ -9,7 +9,8 @@ const { Subscription } = require('../models/subscriptions');
 const { auth, asyncEH } = require('../middleware/index');
 const { updatePortfolio, updateSubscription, updateWallet, updateStrategy } = require('../helpers/index');
 
-router.post('/', asyncEH(async (req, res) => {
+router.post('/', auth, asyncEH(async (req, res) => {
+    if(_.isUndefined(req.body.account)) req.body.account = req.user._id;
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 

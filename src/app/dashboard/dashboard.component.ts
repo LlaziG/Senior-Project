@@ -24,7 +24,7 @@ export const dashboardTransition = trigger('dashboardTransition', [
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css'],
+  styleUrls: ['./dashboard.component.scss'],
   animations: [dashboardTransition],
   host: {
     '[@dashboardTransition]': ''
@@ -49,21 +49,26 @@ export class DashboardComponent implements OnInit {
     });
     this.http.get(APP_DI_CONFIG.apiEndpoint + '/portfolios/me', { headers }).toPromise().then((portfolioData: any) => {
       var portfolioProfit = 0;
+      var portfolioLongPrice = 0;
+      var portfolioShortPrice = 0;
 
       portfolioData.forEach(pos => {
         portfolioProfit += pos.profit
+        if(pos.type =="buy") portfolioLongPrice += pos.price;
+        if(pos.type =="short") portfolioShortPrice += pos.price;
       });
       this.http.get(APP_DI_CONFIG.apiEndpoint + '/wallets/me', { headers }).toPromise().then((walletData: any) => {
         this.http.get(APP_DI_CONFIG.apiEndpoint + '/strategies/me/value', { headers }).toPromise().then((strategyProfit: any) => {
           if(strategyProfit.length == 0){
             this.netWorth = walletData.invested;
-            this.available = walletData.available - walletData.provisions;
+            this.available = walletData.available - walletData.provisions*2;
             this.provisions = walletData.provisions;
           }
           else{
             this.netWorth = walletData.invested + strategyProfit[0].profit + portfolioProfit;
             console.log("Portfolio Profit: ", portfolioProfit, "Strategy Profit: ", strategyProfit[0].profit);
-            this.available = walletData.available - walletData.provisions;
+            console.log("Portfolio Long Price: ", portfolioLongPrice,"Portfolio Short Price: ", portfolioShortPrice);
+            this.available = walletData.available - walletData.provisions*2;
             this.provisions = walletData.provisions;
           }
 

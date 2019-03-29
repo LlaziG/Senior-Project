@@ -5,10 +5,8 @@ module.exports = async function stopLoss(server, portfolios) {
     const data = JSON.parse(await server.yahoo.getQuote(query.join(",")));
 
     for (portfolio of portfolios) {
-        let close = false;
-        if (portfolio.type == "short") if ((portfolio.total / portfolio.volume - data[portfolio.ticker]) / (portfolio.total / portfolio.volume) <= -0.02) close = true;
-        else if (portfolio.type == "buy") if ((portfolio.total / portfolio.volume * -1 - data[portfolio.ticker]) / (portfolio.total / portfolio.volume) * -1 >= 0.02) close = true;
-        if (close) {
+        if ((portfolio.type == "short" && ((portfolio.total / portfolio.volume - data[portfolio.ticker]) / (portfolio.total / portfolio.volume) <= -0.02)) ||
+            (portfolio.type == "buy" && ((portfolio.total / portfolio.volume * -1 - data[portfolio.ticker]) / (portfolio.total / portfolio.volume) * -1 >= 0.02))) {
             let transactionData = new Object();
             const multiplier = portfolio.type == "short" ? -1 : 1;
             transactionData.ticker = portfolio.ticker;

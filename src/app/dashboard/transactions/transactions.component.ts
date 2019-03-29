@@ -11,7 +11,7 @@ import 'datatables.net-bs4';
 @Component({
   selector: 'app-transactions',
   templateUrl: './transactions.component.html',
-  styleUrls: ['./transactions.component.css']
+  styleUrls: ['./transactions.component.scss']
 })
 export class TransactionsComponent implements OnInit {
   transactions: any[];

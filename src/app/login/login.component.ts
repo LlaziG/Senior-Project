@@ -10,7 +10,7 @@ import { AuthenticationService } from '../_services';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'],
+  styleUrls: ['./login.component.scss'],
   animations: [routerTransition]
 })
 export class LoginComponent implements OnInit {

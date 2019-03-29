@@ -18,6 +18,7 @@ module.exports = function trader() {
         let wallets = helper.splitObjByAccounts(values[2]);
         //For each Account
         await Promise.all(Object.keys(subscriptions).map(async (key) => {
+            console.log("HANDLING ACCOUNT: ", key);
             //For each of its subscriptions
             await Promise.all(subscriptions[key].map(async (subscription) => {
                 let skipFlag = false;
@@ -47,6 +48,7 @@ module.exports = function trader() {
             }))
                 .then(async () => {
                     //Transactions for current account are now complete - handle stopLoss
+                    console.log("STOP LOSS ACCOUNT: ", key);
                     if (portfolios[key]) await stopLoss(server, portfolios[key]);
                 }).catch(err => {
                     console.log(err);
