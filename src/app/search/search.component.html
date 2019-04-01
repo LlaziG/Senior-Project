@@ -1,4 +1,4 @@
-<form class="company-form" [formGroup]="companiesForm">
+<form class="company-form row" [formGroup]="companiesForm">
   <mat-form-field class="company-full-width">
     <input matInput placeholder="Search for a stock" [matAutocomplete]="auto" formControlName='suggestionInput'>
   </mat-form-field>
@@ -15,7 +15,7 @@
     </ng-container>
   </mat-autocomplete>
 </form>
-<form class="subscription-form" [formGroup]="suggestions" (ngSubmit)="submitSubscription()">
+<form class="subscription-form row" [formGroup]="suggestions" (ngSubmit)="submitSubscription()">
   <mat-form-field>
     <input matInput placeholder="Company (disabled)" disabled value={{this.currentTicker}}>
   </mat-form-field>

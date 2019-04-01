@@ -48,15 +48,15 @@ export class DashboardChartsComponent implements OnInit {
         },
         xAxis: {
           type: 'value',
-          axisLine: { lineStyle: { color: 'white' } },
+          axisLine: { lineStyle: { color: '#EEEEEE' } },
         },
         yAxis: {
           type: 'category',
-          axisLine: { lineStyle: { color: 'white' } },
+          axisLine: { lineStyle: { color: '#EEEEEE' } },
         },
         series: [
           {
-            symbolSize: 20,
+            symbolSize: 8,
             type: 'scatter',
             data: this.scatterStrategies
           }
@@ -94,7 +94,7 @@ export class DashboardChartsComponent implements OnInit {
       this.lineChart = echarts.init(document.getElementById('bot-performance'));
       this.lineChartOptions = {
         textStyle: {
-          color: 'white'
+          color: '#EEEEEE'
         },
         tooltip: {
           trigger: 'axis'
@@ -102,7 +102,7 @@ export class DashboardChartsComponent implements OnInit {
         legend: {
           data: this.lineStrategies,
           textStyle: {
-            color: 'white'
+            color: '#EEEEEE'
           }
         },
         color: this.colors,

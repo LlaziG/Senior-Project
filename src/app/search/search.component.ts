@@ -8,11 +8,34 @@ import { switchMap, debounceTime, tap, finalize } from 'rxjs/operators';
 import { APP_DI_CONFIG } from '../app-config.module';
 import { ToastrService } from 'ngx-toastr';
 
+import { trigger, stagger, animate, style, group, query as q, transition, keyframes } from '@angular/animations';
+const query = (s, a, o = { optional: true }) => q(s, a, o);
+
+export const searchTransition = trigger('searchTransition', [
+  transition(':enter', [
+    query('.row', style({ opacity: 0 })),
+    query('.row', stagger(100, [
+      style({ transform: 'translateY(100px)' }),
+      animate('500ms cubic-bezier(.75,-0.48,.26,1.52)', style({ transform: 'translateY(0px)', opacity: 1 })),
+    ])),
+  ]),
+  transition(':leave', [
+    query('.row', stagger(100, [
+      style({ transform: 'translateY(0px)', opacity: 1 }),
+      animate('500ms cubic-bezier(.75,-0.48,.26,1.52)', style({ transform: 'translateY(100px)', opacity: 0 })),
+    ])),
+  ])
+]);
+
 @Component({
     selector: 'app-search',
     templateUrl: './search.component.html',
     styleUrls: ['./search.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    animations: [searchTransition],
+  host: {
+    '[@searchTransition]': ''
+  }
 })
 export class SearchComponent implements OnInit {
 
@@ -85,7 +108,7 @@ export class SearchComponent implements OnInit {
         }
         function setOptions(company, callback) {
             that.stockChartOptions = {
-                backgroundColor: '#21202D',
+                backgroundColor: '#1B191B',
                 animation: false,
                 legend: {
                     data: [company, 'MA5', 'MA10', 'MA20', 'MA30'],
@@ -214,10 +237,10 @@ export class SearchComponent implements OnInit {
                     dimension: 2,
                     pieces: [{
                         value: -1,
-                        color: '#b33939'
+                        color: '#ff394f'
                     }, {
                         value: 1,
-                        color: '#218c74'
+                        color: '#1ec481'
                     }]
                 },
                 grid: [
@@ -319,8 +342,8 @@ export class SearchComponent implements OnInit {
                         data: that.candles,
                         itemStyle: {
                             normal: {
-                                color: '#218c74',
-                                color0: '#b33939',
+                                color: '#1ec481',
+                                color0: '#ff394f',
                                 borderColor: null,
                                 borderColor0: null
                             }

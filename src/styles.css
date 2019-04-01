@@ -18,7 +18,8 @@ html, body {
 	width: 100%;
 	padding: 0;
 	margin: 0;
-	background-color: #2F323D; /* #353744 #494b5a */
+	background-color: #1B191B; /* #353744 #494b5a */
+	color: #eee;
 	font-family: "Lato", "FoundersGrotesk";
 	overflow-x: hidden;
 }
@@ -63,14 +64,16 @@ body::-webkit-scrollbar-thumb {
 	background-repeat: repeat-x;
 }
 .bg-gradient-info {
-	background-image: -webkit-linear-gradient(45deg, #168dee, #62bcf6);
-	background-image: -moz-linear-gradient(45deg, #168dee, #62bcf6);
-	background-image: -o-linear-gradient(45deg, #168dee, #62bcf6);
-	background-image: linear-gradient(45deg, #168dee, #62bcf6);
-	background-repeat: repeat-x;
+	/* background-image: -webkit-linear-gradient(45deg, #0093E9 0%, #80D0C7 100%);
+	background-image: -moz-linear-gradient(45deg, #0093E9 0%, #80D0C7 100%);
+	background-image: -o-linear-gradient(45deg, #0093E9 0%, #80D0C7 100%);
+	background-image: linear-gradient(45deg, #0093E9 0%, #80D0C7 100%);
+	background-repeat: repeat-x; */
+	background-color: #0093E9;
+	
 }
 .bg-blue {
-	background-color: #156BBF;
+	background-color: #0093E9;
 }
 .bg-none {
 	background-color: transparent;
@@ -85,4 +88,9 @@ body::-webkit-scrollbar-thumb {
 }
 .page-link, .page-link:focus, .page-link:hover {
   color: #156BBF;
+}
+.text-white{
+	color: #eee!important;
+	font-family: 'Montserrat';
+    letter-spacing: -0.03em;
 }

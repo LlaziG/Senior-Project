@@ -3,8 +3,8 @@ const trader = require('./modules/trader'); //Trader Module
 const strategySelector = require('./modules/strategySelector'); //StrategySelector Module
 
 async function traderModules() {
-    const marketState = await server.yahoo.isActiveHours();
-    if (marketState == "REGULAR") {
+    const market = await server.yahoo.isActiveHours();
+    if (market.marketState == "REGULAR") {
         trader(); //Start Trader
         strategySelectorFlag = false;
     }

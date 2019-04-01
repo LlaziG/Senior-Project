@@ -1,32 +1,32 @@
 .company-form {
 	width: 100%;
 	input {
-		color: white !important;
+		color: #eee !important;
 	}
 	label {
-		color: white !important;
+		color: #eee !important;
 	}
 }
 .subscription-form {
 	.mat-select-value-text {
-		color: white !important;
+		color: #eee !important;
 	}
 	.mat-select-arrow {
-		color: white !important;
+		color: #eee !important;
 	}
 	label {
-		color: white !important;
+		color: #eee !important;
 	}
 	input {
-		color: white !important;
+		color: #eee !important;
 	}
 }
 .mat-form-field-underline {
-	background-color: white !important;
+	background-color: #eee !important;
 }
 .mat-form-field.mat-focused {
 	.mat-form-field-ripple {
-		background-color: white !important;
+		background-color: #eee !important;
 	}
 }
 .mat-progress-spinner {
@@ -89,6 +89,10 @@
 		-ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=85);
 		filter: alpha(opacity=85);
 	}
+}
+button{
+	height: 36px;
+    margin-top: 9px!important;
 }
 .toast-info {
 	background-color: #156BBF;

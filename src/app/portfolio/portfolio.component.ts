@@ -7,11 +7,34 @@ import * as $ from 'jquery';
 import 'datatables.net';
 import 'datatables.net-bs4';
 
+import { trigger, stagger, animate, style, group, query as q, transition, keyframes } from '@angular/animations';
+const query = (s, a, o = { optional: true }) => q(s, a, o);
+
+export const portfolioTransition = trigger('portfolioTransition', [
+  transition(':enter', [
+    query('.row', style({ opacity: 0 })),
+    query('.row', stagger(100, [
+      style({ transform: 'translateY(100px)' }),
+      animate('500ms cubic-bezier(.75,-0.48,.26,1.52)', style({ transform: 'translateY(0px)', opacity: 1 })),
+    ])),
+  ]),
+  transition(':leave', [
+    query('.row', stagger(100, [
+      style({ transform: 'translateY(0px)', opacity: 1 }),
+      animate('500ms cubic-bezier(.75,-0.48,.26,1.52)', style({ transform: 'translateY(100px)', opacity: 0 })),
+    ])),
+  ])
+]);
+
 @Component({
   selector: 'app-portfolio',
   templateUrl: './portfolio.component.html',
   styleUrls: ['./portfolio.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  animations: [portfolioTransition],
+  host: {
+    '[@portfolioTransition]': ''
+  }
 })
 export class PortfolioComponent implements OnInit {
   portfolio: any[];
@@ -67,7 +90,7 @@ export class PortfolioComponent implements OnInit {
 
     this.http.get(APP_DI_CONFIG.apiEndpoint + '/quotes/activeHours', { headers }).toPromise()
       .then((market: any) => {
-        if (market.marketState == "PRE") this.toastr.warning('Market is not opened yet! Positions were not closed!', 'Market is currently closed!', { timeOut: 4000, positionClass: "toast-top-right" });
+        if (market.marketState != "REGULAR") this.toastr.warning('Market is not opened yet! Positions were not closed!', 'Market is currently closed!', { timeOut: 4000, positionClass: "toast-top-right" });
         else {
           this.http.get(APP_DI_CONFIG.apiEndpoint + '/portfolios/me', { headers }).toPromise()
             .then(async (data: Array<Object>) => {
@@ -82,7 +105,7 @@ export class PortfolioComponent implements OnInit {
                     strategy: position.strategy,
                     total: position.value * multiplier
                   }
-                  const result = await this.http.post(APP_DI_CONFIG.apiEndpoint + '/transactions', transactionObject, { headers }).toPromise().then((data: any) => {
+                  const result = this.http.post(APP_DI_CONFIG.apiEndpoint + '/transactions', transactionObject, { headers }).toPromise().then((data: any) => {
                     return 200;
                   }).catch(err => {
                     return 400;
