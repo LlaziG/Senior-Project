@@ -90,7 +90,7 @@ export class PortfolioComponent implements OnInit {
 
     this.http.get(APP_DI_CONFIG.apiEndpoint + '/quotes/activeHours', { headers }).toPromise()
       .then((market: any) => {
-        if (market.marketState != "REGULAR") this.toastr.warning('Market is not opened yet! Positions were not closed!', 'Market is currently closed!', { timeOut: 4000, positionClass: "toast-top-right" });
+        if (market.marketState == "PRE") this.toastr.warning('Market is not opened yet! Positions were not closed!', 'Market is currently closed!', { timeOut: 4000, positionClass: "toast-top-right" });
         else {
           this.http.get(APP_DI_CONFIG.apiEndpoint + '/portfolios/me', { headers }).toPromise()
             .then(async (data: Array<Object>) => {

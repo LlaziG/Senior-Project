@@ -54,7 +54,8 @@
 			margin: auto;
 			width: 80%;
 			font-size: 18px;
-			font-family: "Lato", "FoundersGrotesk";
+			letter-spacing: -0.03em;
+			font-family: "Montseratt", "FoundersGrotesk";
 			font-weight: 300;
 			li {
 				padding: 10px 0;
@@ -66,10 +67,10 @@
 				}
 				.active {
 					span {
-						color: white;
+						color: #eee;
 					}
 					i {
-						color: white;
+						color: #eee;
 					}
 				}
 			}
@@ -127,10 +128,12 @@
 	}
 }
 .login {
-	font-family: "Lato", "FoundersGrotesk";
+	letter-spacing: -0.03em;
+	font-family: "Montseratt", "FoundersGrotesk";
 	font-weight: 300;
 	input {
-		font-family: "Lato", "FoundersGrotesk";
+		letter-spacing: -0.03em;
+		font-family: "Montseratt", "FoundersGrotesk";
 		font-weight: 300;
 		border: none;
 		outline: none;
@@ -141,7 +144,7 @@
 		color: #232223;
 		font-size: 18px;
 		letter-spacing: 1px;
-		background-color: #fff;
+		background-color: #eee;
 		&:focus {
 			background-color: #ddd;
 		}
@@ -162,7 +165,7 @@
 	}
 	.loginButton {
 		background-color: #218c74;
-		color: white;
+		color: #eee;
 		width: 16vmax;
 		margin: auto;
 		margin-top: 0.53vmax;
@@ -202,7 +205,7 @@
 		position: relative;
 	}
 	font-size: 20px;
-	color: white;
+	color: #eee;
 	margin-bottom: 1.06vmax;
 	letter-spacing: 2px;
 }

@@ -5,8 +5,8 @@ const strategy = require('../strategies/index');
 //Modules
 const stopLoss = require('./stopLoss');
 const executor = require('./executor');
-module.exports = function trader() {
-    Promise.all([
+module.exports = async function trader() {
+    return await Promise.all([
         // Get subscriptions - what to be traded, portfolios - open positions, wallets - available cash
         server.subscription.getSubscriptions(),
         server.portfolio.getPortfolios(),
@@ -17,10 +17,10 @@ module.exports = function trader() {
         let portfolios = helper.splitObjByAccounts(values[1]);
         let wallets = helper.splitObjByAccounts(values[2]);
         //For each Account
-        await Promise.all(Object.keys(subscriptions).map(async (key) => {
-            console.log("HANDLING ACCOUNT: ", key);
+        return await Promise.all(Object.keys(subscriptions).map(async (key) => {
+            console.log("--> HANDLING ACCOUNT: ", key);
             //For each of its subscriptions
-            await Promise.all(subscriptions[key].map(async (subscription) => {
+            return await Promise.all(subscriptions[key].map(async (subscription) => {
                 let skipFlag = false;
                 let range = "7d";
 
@@ -48,14 +48,14 @@ module.exports = function trader() {
             }))
                 .then(async () => {
                     //Transactions for current account are now complete - handle stopLoss
-                    console.log("STOP LOSS ACCOUNT: ", key);
-                    if (portfolios[key]) await stopLoss(server, portfolios[key]);
+                    if (portfolios[key]) return await stopLoss(server, portfolios[key]);
                 }).catch(err => {
                     console.log(err);
                 });
         }))
             .then(() => {
-                console.log("--------------BATCH COMPLETE - WAITING: 20s--------------");
+                console.log("-------------- BATCH COMPLETE --------------");
+                return { isComplete: true };
             }).catch(err => {
                 console.log(err);
             });
