@@ -22,5 +22,3 @@ setInterval(async () => {
         strategySelectorFlag = true;
     }
 }, 10000)
-
-
