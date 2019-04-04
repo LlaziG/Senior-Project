@@ -2,11 +2,13 @@
 const server = require('../communcation/index');
 const helper = require('../helpers/index');
 const strategy = require('../strategies/index');
+
 const strategies = Object.keys(strategy);
 
 //Modules
 const stopLoss = require('./stopLoss');
 const executor = require('./executor');
+const assertRisk = require('../modules/assertRisk');
 module.exports = function strategySelector() {
     Promise.all([
         // Get subscriptions - what to be traded, portfolios - open positions, wallets - available cash
@@ -30,16 +32,17 @@ module.exports = function strategySelector() {
 
                 if (!skipFlag) {
                     //Get Yahoo Data
-                    traderObj = Promise.all([server.yahoo.getChart(subscription.ticker, subscription.candleSize, range)])
+                    traderObj = Promise.all([server.yahoo.getChart(subscription.ticker, subscription.candleSize, range), server.yahoo.getChart("EURUSD=X", subscription.candleSize, range)])
                         .then(async (values) => {
-                            const ohlcv = helper.formatTOHLCV(JSON.parse(values).chart.result[0]);
+                            const ohlcv = helper.formatTOHLCV(JSON.parse(values[0]).chart.result[0]);
+                            const ohlcvUSD = helper.formatTOHLCV(JSON.parse(values[1]).chart.result[0]);
                             //Calculate Strategy Results
                             let strategyResults = new Object();
 
                             for (strategyName of strategies) strategyResults[strategyName] = strategy[strategyName].getQuote(ohlcv, "all");
-                            const selectedStrategy = compareProfit(ohlcv, strategyResults);
-                            console.log(subscription.ticker, selectedStrategy);
-                            return await server.subscription.updateStrategy(subscription._id, { strategy: selectedStrategy.toUpperCase() });
+                            const selectedStrategy = await compareProfit(ohlcv, ohlcvUSD, strategyResults);
+                            console.log(subscription.ticker, selectedStrategy.strategy, selectedStrategy.profit);
+                            return await server.subscription.updateStrategy(subscription._id, { strategy: selectedStrategy.strategy.toUpperCase() });
                         })
                         .catch(err => {
                             console.log(err);
@@ -57,19 +60,23 @@ module.exports = function strategySelector() {
         });
     })
 }
-function compareProfit(ohlcv, results) {
+async function compareProfit(ohlcv, ohlcvUSD, results) {
     let transactions = new Object();
     let profits = new Object();
     let maxProfitStrategy;
+
     for (strategyName of strategies) {
         transactions[strategyName] = new Array();
         profits[strategyName] = 0;
         maxProfitStrategy = strategyName;
 
+        let i = 0;
         for (candle of results[strategyName]) {
+            i++;
             let last_transaction = transactions[strategyName].length != 0 ? transactions[strategyName][transactions[strategyName].length - 1] : 0;
             if (last_transaction && transactions[strategyName].length % 2 == 1) {
                 for (let i = last_transaction.candleNo + 1; i < ohlcv.close.length; i++) {
+                    //Stop Loss
                     if (candle.order != "HOLD") break;
                     else if (last_transaction.type == "BUY") {
                         if (((last_transaction.price * -1 - ohlcv.low[i]) / (last_transaction.price * -1)) >= 0.02) {
@@ -86,18 +93,25 @@ function compareProfit(ohlcv, results) {
                 }
             }
             if (candle.order != "HOLD") {
-                let multiplier = candle.order == "BUY" ? -1 : 1;
-                if (last_transaction) {
-                    if (last_transaction.type != candle.order) {
+                //Executions
+                let ohlcvCopy = ohlcv.close.slice();
+                let ohlcvUSDCopy = ohlcvUSD.close.slice();
+                let VaR = assertRisk({ close: ohlcvCopy.splice(0, i) }, { close: ohlcvUSDCopy.splice(0, i) });
+                if (1) {
+                    let multiplier = candle.order == "BUY" ? -1 : 1;
+                    if (last_transaction) {
+                        if (last_transaction.type != candle.order) {
+                            transactions[strategyName].push({ type: candle.order, price: ohlcv.close[candle.candleNo] * multiplier, candleNo: candle.candleNo });
+                        }
+                    }
+                    else {
                         transactions[strategyName].push({ type: candle.order, price: ohlcv.close[candle.candleNo] * multiplier, candleNo: candle.candleNo });
                     }
-                }
-                else {
-                    transactions[strategyName].push({ type: candle.order, price: ohlcv.close[candle.candleNo] * multiplier, candleNo: candle.candleNo });
-                }
+                } else { console.log(VaR); }
             }
         }
         for (i in transactions[strategyName]) {
+            //Calculate Profits
             if (transactions[strategyName].length % 2 == 1 && i == transactions[strategyName].length - 1) break;
             else profits[strategyName] += transactions[strategyName][i].price;
         }
@@ -105,5 +119,14 @@ function compareProfit(ohlcv, results) {
     for (key of Object.keys(profits)) {
         if (profits[maxProfitStrategy] < profits[key]) maxProfitStrategy = key;
     }
-    return maxProfitStrategy;
+    return { strategy: maxProfitStrategy, profit: profits[maxProfitStrategy] };
+
+}
+function cloneObj(obj) {
+    if (null == obj || "object" != typeof obj) return obj;
+    var copy = obj.constructor();
+    for (attr of Object.keys(obj)) {
+        copy[attr] = obj[attr];
+    }
+    return copy;
 }

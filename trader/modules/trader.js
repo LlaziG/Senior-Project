@@ -30,14 +30,17 @@ module.exports = async function trader() {
 
                 if (!skipFlag) {
                     //Get Yahoo Data
-                    traderObj = Promise.all([server.yahoo.getChart(subscription.ticker, subscription.candleSize, range)])
+                    traderObj = Promise.all([
+                        server.yahoo.getChart(subscription.ticker, subscription.candleSize, range)])
                         .then(async (values) => {
                             const ohlcv = helper.formatTOHLCV(JSON.parse(values).chart.result[0]);
                             //Calculate Corresponding Strategy
                             const strategyResults = strategy[subscription.strategy.toLowerCase()].getQuote(ohlcv, "now");
-                            //Risk Assertion module
-                            //Execute Trade
-                            return await executor(server, strategy, key, subscriptions, subscription, portfolios, wallets, strategyResults);
+                            if (strategyResults[0].order != "HOLD") {
+                                //Execute Trade
+                                return await executor(server, key, subscriptions, subscription, portfolios, wallets, strategyResults, ohlcv, range);
+                            }
+                            else return { action: "SKIPPED", strategy: subscription.strategy, ticker: subscription.ticker, candleSize: subscription.candleSize };
 
                         })
                         .catch(err => {

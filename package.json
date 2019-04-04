@@ -37,6 +37,7 @@
     "js": "^0.1.0",
     "jsonwebtoken": "^8.5.0",
     "lodash": "^4.17.11",
+    "mathjs": "^5.8.0",
     "mongoose": "^5.4.14",
     "ngx-toastr": "^9.1.2",
     "request": "^2.88.0",
