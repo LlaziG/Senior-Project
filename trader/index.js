@@ -7,18 +7,20 @@ let traderComplete = true;
 
 setInterval(async () => {
     const market = await server.yahoo.isActiveHours();
-    if (market.marketState == "REGULAR") {
-        if (traderComplete) {
-            traderComplete = false;
-            strategySelectorFlag = false;
-            const response = await trader(); //Start Trader
-            if (response.isComplete == true) traderComplete = true;
+    if (market) {
+        if (market.marketState == "REGULAR") {
+            if (traderComplete) {
+                traderComplete = false;
+                strategySelectorFlag = false;
+                const response = await trader(); //Start Trader
+                if (response.isComplete == true) traderComplete = true;
 
+            }
         }
-    }
-    else if (!strategySelectorFlag) {
-        console.log("Time For Selecting");
-        strategySelector();
-        strategySelectorFlag = true;
+        else if (!strategySelectorFlag) {
+            console.log("Time For Selecting");
+            strategySelector();
+            strategySelectorFlag = true;
+        }
     }
 }, 10000)

@@ -68,7 +68,7 @@ router.get('/', auth, asyncEH(async (req, res) => {
 router.get('/me', auth, asyncEH(async (req, res) => {
     const transactions = await Transaction.find({
         account: req.user._id
-    }).sort('-dateTime');
+    }).sort('-dateTime').limit(150);
     res.send(transactions);
 }));
 

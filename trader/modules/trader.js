@@ -57,10 +57,12 @@ module.exports = async function trader() {
                 });
         }))
             .then(() => {
-                console.log("-------------- BATCH COMPLETE --------------");
+                console.log(`---- BATCH COMPLETE: ${new Date().toLocaleString()} ----`);
                 return { isComplete: true };
             }).catch(err => {
                 console.log(err);
             });
+    }).catch(err => {
+        console.log(err);
     })
 }

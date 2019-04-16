@@ -63,22 +63,29 @@ export class LoginComponent implements OnInit {
         .pipe(first())
         .subscribe(
           data => {
-            this.loginSuccessful(element, data);
+            setTimeout(() => {
+              this.loginSuccessful(element, data);
+            }, 1500)
+
           },
           error => {
-            this.loginFailed(element, error);
+            setTimeout(() => {
+              this.loginFailed(element, error);
+            }, 1500)
+
           });
     }
   }
   addAnimations() {
     const loginSideBar = document.getElementsByClassName("loginSideBar")[0];
-    
+
     loginSideBar.setAttribute("style", "-moz-transition: all 1000ms cubic-bezier(0.23, 1, 0.32, 1);-webkit-transition: all 1000ms cubic-bezier(0.23, 1, 0.32, 1);transition:all 1000ms cubic-bezier(0.23, 1, 0.32, 1);");
     loginSideBar.querySelector(".menu").setAttribute("style", "-moz-transition: all 1000ms cubic-bezier(0.23, 1, 0.32, 1);-webkit-transition: all 1000ms cubic-bezier(0.23, 1, 0.32, 1);transition:all 1000ms cubic-bezier(0.23, 1, 0.32, 1);");
     loginSideBar.querySelector(".loginForm").setAttribute("style", "display:block;-moz-transition: all 1000ms cubic-bezier(0.23, 1, 0.32, 1);-webkit-transition: all 1000ms cubic-bezier(0.23, 1, 0.32, 1);transition:all 1000ms cubic-bezier(0.23, 1, 0.32, 1);");
-    loginSideBar.querySelector(".login input").setAttribute("style", "-moz-transition: all 400ms cubic-bezier(0.77, 0, 0.175, 1);-webkit-transition: all 400ms cubic-bezier(0.77, 0, 0.175, 1);transition:all 400ms cubic-bezier(0.77, 0, 0.175, 1);");
-    loginSideBar.querySelector(".loginButton").setAttribute("style", "-moz-transition: all 400ms cubic-bezier(0.77, 0, 0.175, 1);-webkit-transition: all 400ms cubic-bezier(0.77, 0, 0.175, 1);transition:all 400ms cubic-bezier(0.77, 0, 0.175, 1);") 
-    loginSideBar.querySelectorAll(".loginUsername, .loginPassword, .loginButton").forEach(el =>{
+    loginSideBar.querySelectorAll(".login input").forEach(el => {
+    el.setAttribute("style", "-moz-transition: all 400ms cubic-bezier(0.77, 0, 0.175, 1);-webkit-transition: all 400ms cubic-bezier(0.77, 0, 0.175, 1);transition:all 400ms cubic-bezier(0.77, 0, 0.175, 1);");});
+    loginSideBar.querySelector(".loginButton").setAttribute("style", "-moz-transition: all 400ms cubic-bezier(0.77, 0, 0.175, 1);-webkit-transition: all 400ms cubic-bezier(0.77, 0, 0.175, 1);transition:all 400ms cubic-bezier(0.77, 0, 0.175, 1);")
+    loginSideBar.querySelectorAll(".loginUsername, .loginPassword, .loginButton").forEach(el => {
       el.setAttribute("style", "-moz-transition: all 600ms cubic-bezier(0.77, 0, 0.175, 1);-webkit-transition: all 600ms cubic-bezier(0.77, 0, 0.175, 1);transition:all 600ms cubic-bezier(0.77, 0, 0.175, 1);")
     })
     loginSideBar.querySelector(".loginName").setAttribute("style", "-moz-transition: all 800ms cubic-bezier(0.23, 1, 0.32, 1);-webkit-transition: all 800ms cubic-bezier(0.23, 1, 0.32, 1);transition:all 800ms cubic-bezier(0.23, 1, 0.32, 1);")
