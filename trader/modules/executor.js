@@ -21,10 +21,10 @@ module.exports = async function executor(server, key, subscriptions, subscriptio
                     transactionData.total = transactionData.stockPrice * transactionData.volume * multiplier;
                     transactionData.account = key;
                     const respObj = await server.transaction.postTransaction(transactionData);
-                    console.log("----> EXECUTED: ", subscription.strategy, subscription.ticker, subscription.candleSize);
+                    console.log("----> EXECUTED: ", subscription.ticker, transactionData.type, subscription.candleSize, subscription.strategy);
                     return {
                         action: "EXECUTED", strategy: subscription.strategy, ticker: subscription.ticker, candleSize: subscription.candleSize,
-                        response: respObj
+                        transactionType: transactionData.type, response: respObj
                     };
                 }
             }
@@ -51,10 +51,10 @@ module.exports = async function executor(server, key, subscriptions, subscriptio
             if (transactionData.volume != 0) {
                 //Execute Transaction with the transactionData object
                 const respObj = await server.transaction.postTransaction(transactionData);
-                console.log("----> EXECUTED: ", subscription.strategy, subscription.ticker, subscription.candleSize);
+                console.log("----> EXECUTED: ", subscription.ticker, transactionData.type, subscription.candleSize, subscription.strategy);
                 return {
                     action: "EXECUTED", strategy: subscription.strategy, ticker: subscription.ticker, candleSize: subscription.candleSize,
-                    response: respObj
+                    transactionType: transactionData.type, response: respObj
                 };
             }
         }

@@ -41,6 +41,7 @@
     "mongoose": "^5.4.14",
     "ngx-toastr": "^9.1.2",
     "node-fetch": "^2.3.0",
+    "node-notifier": "^5.4.0",
     "request": "^2.88.0",
     "rxjs": "~6.3.3",
     "ta-math": "^0.3.11",
