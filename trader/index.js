@@ -2,6 +2,7 @@ const server = require('./communcation/index');
 const trader = require('./modules/trader'); //Trader Module
 const strategySelector = require('./modules/strategySelector'); //StrategySelector Module
 
+
 let strategySelectorFlag = false;
 let traderComplete = true;
 let forceSelection = false;

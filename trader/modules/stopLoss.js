@@ -17,6 +17,11 @@ module.exports = async function stopLoss(server, portfolios) {
                 transactionData.strategy = portfolio.strategy;
                 transactionData.total = transactionData.stockPrice * transactionData.volume * multiplier;
                 transactionData.account = portfolio.account;
+                notifier.notify({
+                    title: 'STOP-LOSS',
+                    message: `Ticker: ${ portfolio.ticker}, Time: ${new Date().toTimeString()}`,
+                    sound: true
+                });
                 console.log("----> STOP_LOSS: ", portfolio.type == "short" ? "cover" : "sell", portfolio.ticker);
                 stopLossArray.push(await server.transaction.postTransaction(transactionData));
             }
