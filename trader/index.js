@@ -4,14 +4,22 @@ const strategySelector = require('./modules/strategySelector'); //StrategySelect
 
 let strategySelectorFlag = false;
 let traderComplete = true;
+let forceSelection = false;
+process.argv.forEach(val => {
+    val == "-forceSelection"
+        ? (forceSelection = true, console.log("Forcing Strategy Selection"))
+        : forceSelection = false;
+
+});
 
 setInterval(async () => {
     const market = await server.yahoo.isActiveHours();
     if (market) {
-        if (market.marketState == "REGULAR") {
+        if (!forceSelection && market.marketState == "REGULAR") {
             if (traderComplete) {
                 traderComplete = false;
                 strategySelectorFlag = false;
+                forceSelection = false;
                 const response = await trader(); //Start Trader
                 if (response.isComplete == true) traderComplete = true;
 
