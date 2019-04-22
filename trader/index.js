@@ -20,7 +20,6 @@ setInterval(async () => {
             if (traderComplete) {
                 traderComplete = false;
                 strategySelectorFlag = false;
-                forceSelection = false;
                 const response = await trader(); //Start Trader
                 if (response.isComplete == true) traderComplete = true;
 
@@ -30,6 +29,7 @@ setInterval(async () => {
             console.log("Time For Selecting");
             strategySelector();
             strategySelectorFlag = true;
+            forceSelection = false;
         }
     }
 }, 10000)

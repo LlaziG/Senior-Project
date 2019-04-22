@@ -1,3 +1,4 @@
+const notifier = require('node-notifier');
 
 module.exports = async function stopLoss(server, portfolios) {
     let query = new Array();
