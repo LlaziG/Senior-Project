@@ -18,25 +18,44 @@ router.post("/", asyncEH(async (req, res) => {
 }));
 
 router.get("/me/dates", auth, asyncEH(async (req, res) => {
-    const strategies = await Strategy.aggregate([
-        { $match: { account: ObjectId(req.user._id) } },
-        {
-            $group:
+    let strategies = new Array();
+    Promise.all([
+        await Strategy.aggregate([
+            { $match: { account: ObjectId(req.user._id) } },
             {
-                _id: {
-                    year: { $year: "$date" },
-                    month: { $month: "$date" },
-                    day: { $dayOfMonth: "$date" },
-                    strategy: "$strategy"
-                },
-                profit: { $sum: "$profit" }
-            }
-        },
-        { $sort: { "_id.year": 1, "_id.month": 1, "_id.day": 1, "_id.strategy": 1 } }]);
-
-    if (strategies.length == 0) return res.send([]);
-
-    res.send(strategies);
+                $group:
+                {
+                    _id: {
+                        year: { $year: "$date" },
+                        month: { $month: "$date" },
+                        day: { $dayOfMonth: "$date" },
+                        strategy: "$strategy"
+                    },
+                    profit: { $sum: "$profit" }
+                }
+            },
+            { $sort: { "_id.year": 1, "_id.month": 1, "_id.day": 1, "_id.strategy": 1 } }]),
+        await Strategy.aggregate([
+            { $match: { account: ObjectId(req.user._id) } },
+            {
+                $group:
+                {
+                    _id: {
+                        year: { $year: "$date" },
+                        month: { $month: "$date" },
+                        day: { $dayOfMonth: "$date" },
+                        strategy: "All"
+                    },
+                    profit: { $sum: "$profit" }
+                }
+            },
+            { $sort: { "_id.year": 1, "_id.month": 1, "_id.day": 1, "_id.strategy": 1 } }])
+    ]).then(values => {
+        strategies = values[0];
+        values[1].map(x => strategies.push(x));
+        if (strategies.length == 0) return res.send([]);
+        res.send(strategies);
+    })
 }));
 
 router.get("/me/grouped", auth, asyncEH(async (req, res) => {

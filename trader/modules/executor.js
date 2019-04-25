@@ -70,7 +70,7 @@ module.exports = async function executor(server, key, subscriptions, subscriptio
             }
         }
         else {
-            console.log("----> RISKY: ", VaR);
+            console.log("----> RISKY: ", subscription.ticker, VaR);
             return { action: " HOLD", strategy: subscription.strategy, ticker: subscription.ticker, candleSize: subscription.candleSize }
         }
     }

@@ -6,23 +6,17 @@ const strategy = require('../strategies/index');
 const strategies = Object.keys(strategy);
 
 //Modules
-const stopLoss = require('./stopLoss');
-const executor = require('./executor');
 const assertRisk = require('../modules/assertRisk');
 module.exports = function strategySelector() {
-    Promise.all([
+    return Promise.all([
         // Get subscriptions - what to be traded, portfolios - open positions, wallets - available cash
-        server.subscription.getSubscriptions(),
-        server.portfolio.getPortfolios(),
-        server.wallet.getWallets()
+        server.subscription.getSubscriptions()
     ]).then(async values => {
         //Re-organize results by Accounts for faster and easier indexing
         let subscriptions = helper.splitObjByAccounts(values[0]);
-        let portfolios = helper.splitObjByAccounts(values[1]);
-        let wallets = helper.splitObjByAccounts(values[2]);
 
         //For each Account
-        await Promise.all(Object.keys(subscriptions).map(async (key) => {
+        return await Promise.all(Object.keys(subscriptions).map(async (key) => {
             //For each of its subscriptions
             await Promise.all(subscriptions[key].map(async (subscription) => {
                 let skipFlag = false;
@@ -55,6 +49,7 @@ module.exports = function strategySelector() {
             });
         })).then(() => {
             console.log("-------------- FINISHED STRATEGY SELECTION --------------");
+            return { isComplete: true };
         }).catch(err => {
             console.log(err);
         });

@@ -4,32 +4,33 @@ const strategySelector = require('./modules/strategySelector'); //StrategySelect
 
 
 let strategySelectorFlag = false;
+let strategyComplete = true;
 let traderComplete = true;
 let forceSelection = false;
 process.argv.forEach(val => {
     val == "-forceSelection"
         ? (forceSelection = true, console.log("Forcing Strategy Selection"))
         : forceSelection = false;
-
 });
 
 setInterval(async () => {
     const market = await server.yahoo.isActiveHours();
     if (market) {
         if (!forceSelection && market.marketState == "REGULAR") {
-            if (traderComplete) {
+            if (traderComplete && strategyComplete) {
                 traderComplete = false;
                 strategySelectorFlag = false;
                 const response = await trader(); //Start Trader
                 if (response.isComplete == true) traderComplete = true;
-
             }
         }
         else if (!strategySelectorFlag) {
             console.log("Time For Selecting");
-            strategySelector();
+            strategyComplete = false;
             strategySelectorFlag = true;
             forceSelection = false;
+            const response = await strategySelector(); // Start strategySelction
+            if (response.isComplete == true) strategyComplete = true;
         }
     }
 }, 10000)
